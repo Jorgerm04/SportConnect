@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="rootPane" prefHeight="600.0" prefWidth="900.0" styleClass="main-bg" stylesheets="@../base.css, @login.css"
+           xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.sportconnect.controllers.LoginController">
+    <children>
+        <VBox alignment="CENTER" fillWidth="false" spacing="35.0">
+            <children>
+                <VBox fx:id="loginCard" alignment="CENTER" spacing="40.0" styleClass="login-card">
+                    <children>
+                        <VBox alignment="CENTER">
+                            <children>
+                                <TextFlow textAlignment="CENTER">
+                                    <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 55;" text="Sp" />
+                                    <Text fill="#2563eb" style="-fx-font-weight: 900; -fx-font-size: 55;" text="o" />
+                                    <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 55;" text="rt" />
+                                </TextFlow>
+                                <TextFlow textAlignment="CENTER">
+                                    <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 55;" text="C" />
+                                    <Text fill="#2563eb" style="-fx-font-weight: 900; -fx-font-size: 55;" text="o" />
+                                    <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 55;" text="nnect" />
+                                </TextFlow>
+                            </children>
+                        </VBox>
+
+                        <Label text="Iniciar Sesión" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 26;" />
+
+                        <VBox spacing="20.0" prefWidth="320.0">
+                            <TextField fx:id="emailField" promptText="Email" styleClass="custom-input" />
+                            <PasswordField fx:id="passwordField" promptText="Contraseña" styleClass="custom-input" />
+                        </VBox>
+
+                        <Button maxWidth="Infinity" onAction="#onLoginClick" styleClass="login-button" text="Entrar" />
+                        <Label fx:id="messageLabel" textAlignment="CENTER" wrapText="true" />
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</StackPane>

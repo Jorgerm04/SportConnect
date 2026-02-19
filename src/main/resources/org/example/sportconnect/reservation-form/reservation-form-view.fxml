@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS"
+            pannable="true" styleClass="main-scroll-pane"
+            stylesheets="@../dashboard/dashboard.css, @reservation-form.css"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.sportconnect.controllers.ReservationFormController">
+
+    <content>
+        <VBox spacing="20.0" styleClass="main-bg, form-container">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+
+            <children>
+                <HBox spacing="20.0" alignment="TOP_CENTER" maxWidth="Infinity">
+                    <children>
+                        <VBox fx:id="hboxAdminSelector" spacing="10.0" styleClass="stat-card"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="400.0" visible="false" managed="false">
+                            <children>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <FontIcon iconLiteral="fas-user-shield" iconColor="#2563eb" iconSize="18" />
+                                    <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Cliente" textFill="#2563eb" />
+                                </HBox>
+                                <ComboBox fx:id="comboUsuarios" maxWidth="Infinity" prefHeight="40.0" promptText="Buscar usuario..." styleClass="combo-box-admin" />
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="10.0" styleClass="stat-card" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="400.0">
+                            <children>
+                                <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Selecciona Deporte" textFill="WHITE" />
+                                <HBox fx:id="hboxDeportes" spacing="10.0" maxWidth="Infinity" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <VBox spacing="20.0" styleClass="stat-card" VBox.vgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="CENTER_LEFT">
+                            <children>
+                                <Label fx:id="lblFechaActual" style="-fx-font-weight: bold; -fx-font-size: 15;" text="..." textFill="WHITE" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <HBox spacing="5.0">
+                                    <Button onAction="#diaAnterior" styleClass="logout-btn" style="-fx-background-color: #1e293b; -fx-background-radius: 5;">
+                                        <graphic><FontIcon iconLiteral="fas-chevron-left" iconColor="WHITE" /></graphic>
+                                    </Button>
+                                    <Button onAction="#diaSiguiente" styleClass="logout-btn" style="-fx-background-color: #ffffff; -fx-background-radius: 5;">
+                                        <graphic><FontIcon iconLiteral="fas-chevron-right" iconColor="#0f172a" /></graphic>
+                                    </Button>
+                                </HBox>
+                            </children>
+                        </HBox>
+                        <VBox fx:id="vboxPistasContenedor" spacing="25.0" />
+                    </children>
+                </VBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="summary-card">
+                    <padding>
+                        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Resumen de tu reserva" textFill="WHITE" />
+                                <HBox spacing="15.0">
+                                    <children>
+                                        <Label fx:id="lblResumenSport" text="🏆 --" textFill="#94a3b8" />
+                                        <Label fx:id="lblResumenPista" text="📍 Selecciona pista" textFill="#94a3b8" />
+                                        <Label fx:id="lblResumenFecha" text="📅 --" textFill="#94a3b8" />
+                                        <Label fx:id="lblResumenHora" text="🕒 --:--" textFill="#94a3b8" />
+                                        <Label fx:id="lblResumenPrecio" style="-fx-font-weight: bold;" text="0€" textFill="#2563eb" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <Button fx:id="btnConfirmar" onAction="#handleConfirmar" prefHeight="45.0" prefWidth="180.0" styleClass="add-button" text="Confirmar Reserva" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>

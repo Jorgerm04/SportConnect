@@ -1,0 +1,95 @@
+/* Fondo general */
+.main-bg {
+    -fx-background-color: #020617;
+}
+
+.top-bar {
+    -fx-background-color: #020617;
+    -fx-border-color: #1e293b;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ScrollPane transparente para ver el fondo */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Banner: Tamaños reducidos */
+.welcome-banner {
+    -fx-background-color: #2563eb;
+    -fx-background-radius: 15; /* Bordes un poco menos exagerados */
+}
+
+.banner-title {
+    -fx-text-fill: white;
+    -fx-font-size: 26px; /* Bajado de 42px */
+    -fx-font-weight: 800;
+}
+
+.banner-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-font-size: 14px; /* Bajado de 18px */
+}
+
+.banner-add-button {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: #2563eb;
+    -fx-font-weight: 800;
+    -fx-font-size: 16px; /* Bajado de 24px */
+    -fx-padding: 10 25;  /* Padding más discreto */
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+/* Títulos de sección */
+.section-title {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+}
+
+.reservation-card {
+    -fx-background-color: #0f172a;
+    -fx-background-radius: 10;
+    -fx-padding: 0 25 0 0; /* Arriba, Derecha, Abajo, Izquierda (0) */
+    -fx-overflow-hidden: true; /* Para que el indicador respete el radio del borde */
+}
+
+/* Indicadores: Ahora deben rellenar el alto total y pegar al borde */
+.indicator-active {
+    -fx-background-color: #2563eb;
+    -fx-background-radius: 10 0 0 10; /* Radio solo en las esquinas izquierdas */
+    -fx-min-width: 8;
+    -fx-pref-height: 80; /* Asegura que cubra el alto de la tarjeta */
+}
+
+.indicator-history {
+    -fx-background-color: #9F9F9F;
+    -fx-background-radius: 10 0 0 10;
+    -fx-min-width: 8;
+    -fx-pref-height: 80;
+}
+
+/* Añadimos un contenedor para el texto con su propio padding */
+.card-content {
+    -fx-padding: 15 0 15 20; /* Margen interno para separar el texto del indicador */
+}
+
+/* Textos dentro de la card */
+.sport-name { -fx-text-fill: white; -fx-font-weight: 700; -fx-font-size: 15px; }
+.court-name { -fx-text-fill: #64748b; -fx-font-size: 13px; }
+.info-text { -fx-text-fill: white; -fx-font-size: 13px; }
+
+.cancel-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ef4444;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.logout-btn { -fx-background-color: transparent; -fx-cursor: hand; }

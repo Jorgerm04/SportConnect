@@ -1,0 +1,55 @@
+/* --- CONFIGURACIÓN BASE Y COLORES --- */
+.main-bg {
+    -fx-background-color: #020617;
+}
+
+/* Tipografía general (opcional) */
+.label, .text {
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* Estilo base para el contenedor de la alerta */
+.custom-alert {
+    -fx-background-color: #1e293b; /* Color azul oscuro de tu app */
+    -fx-border-color: #334155;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
+/* Color del texto */
+.custom-alert .label {
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+}
+
+/* Estilo para la cabecera (Header) */
+.custom-alert .header-panel {
+    -fx-background-color: #0f172a;
+    -fx-padding: 10px;
+}
+.custom-alert .header-panel .label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #38bdf8; /* Azul claro/cyan */
+}
+
+/* Estilo de los botones de la alerta */
+.custom-alert .button {
+    -fx-background-color: #38bdf8;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+}
+
+.custom-alert .button:hover {
+    -fx-background-color: #0ea5e9;
+}
+
+/* Quitar el fondo blanco por defecto de la zona de botones */
+.custom-alert .button-bar {
+    -fx-background-color: #1e293b;
+    -fx-padding: 10px;
+}

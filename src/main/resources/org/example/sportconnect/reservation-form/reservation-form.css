@@ -1,0 +1,115 @@
+/* Contenedor principal del formulario */
+.form-container {
+    -fx-background-color: #020617; /* Un tono un poco más oscuro que el fondo general */
+}
+
+/* Botones de horas (Píldoras de tiempo) */
+.hour-btn {
+    -fx-background-color: rgba(16, 185, 129, 0.1); /* Verde traslúcido (disponible) */
+    -fx-text-fill: #10b981;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(16, 185, 129, 0.2);
+    -fx-border-radius: 8;
+}
+
+.hour-btn:hover {
+    -fx-background-color: rgba(16, 185, 129, 0.2);
+}
+
+/* Estado seleccionado (como el azul de la imagen) */
+.hour-selected {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-border-color: #2563eb;
+}
+
+/* Estado ocupado (opcional, por si quieres mostrar horas bloqueadas) */
+.hour-occupied {
+    -fx-background-color: rgba(239, 68, 68, 0.1);
+    -fx-text-fill: #ef4444;
+    -fx-border-color: rgba(239, 68, 68, 0.2);
+    -fx-cursor: default;
+}
+
+/* Tarjeta de resumen inferior con el borde azul brillante */
+.summary-card {
+    -fx-background-color: #0f172a;
+    -fx-border-color: #2563eb;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+}
+
+/* Botones de navegación (los de las flechas < >) */
+.nav-btn-white {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.nav-btn-dark {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.combo-box-admin {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: white;
+}
+
+.combo-box-admin .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #1e293b;
+}
+
+.combo-box-admin .list-cell:hover {
+    -fx-background-color: #2563eb;
+}
+
+
+/* Eliminar el borde y el fondo por defecto del ScrollPane */
+.main-scroll-pane {
+    -fx-background-color: #020617;
+    -fx-background: #020617; /* Fondo del área de contenido */
+    -fx-border-color: transparent;
+}
+
+/* Personalización de la barra de scroll (opcional pero recomendada para el diseño) */
+.main-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-width: 8;
+}
+
+.main-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 10;
+}
+
+.main-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #334155;
+}
+
+.main-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Estado ocupado: Rojo suave con borde y texto rojo */
+.hour-occupied {
+    -fx-background-color: rgba(239, 68, 68, 0.15); /* Rojo traslúcido */
+    -fx-text-fill: #ef4444; /* Rojo brillante */
+    -fx-border-color: rgba(239, 68, 68, 0.4);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.8; /* Se ve ligeramente desactivado */
+}
