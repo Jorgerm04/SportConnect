@@ -146,7 +146,10 @@ public class DashboardController {
                     Label email = new Label(r.getUser().getEmail());
                     name.getStyleClass().add("table-text-bold");
                     email.getStyleClass().add("table-text-sub");
-                    setGraphic(new VBox(2, name, email));
+                    VBox vbox = new VBox(2, name, email);
+                    vbox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    setGraphic(vbox);
+                    setAlignment(javafx.geometry.Pos.CENTER_LEFT);
                 }
             }
         });

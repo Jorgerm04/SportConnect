@@ -8,43 +8,49 @@
 /* --- TARJETAS ESTADÍSTICAS --- */
 .stat-card {
     -fx-background-color: #0f172a;
-    -fx-padding: 25;
-    -fx-background-radius: 20;
+    -fx-padding: 12 16;
+    -fx-background-radius: 14;
     -fx-border-color: #1e293b;
-    -fx-border-radius: 20;
+    -fx-border-radius: 14;
     -fx-border-width: 1;
+    -fx-max-width: Infinity;
+    -fx-max-height: Infinity;
 }
 
 .icon-container-blue {
     -fx-background-color: #132651;
-    -fx-background-radius: 12;
-    -fx-min-width: 55;
-    -fx-min-height: 55;
+    -fx-background-radius: 10;
+    -fx-min-width: 42;
+    -fx-min-height: 42;
+    -fx-max-width: 42;
+    -fx-max-height: 42;
     -fx-alignment: CENTER;
 }
 
-/* --- CABECERA DE PESTAÑAS Y BOTÓN NUEVO --- */
+/* --- CABECERA TABS --- */
 .tab-header-container {
-    -fx-padding: 0 0 0 0;
+    -fx-padding: 0;
 }
 
 .tab-container {
     -fx-background-color: #0f172a;
-    -fx-background-radius: 20 20 0 0;
-    -fx-border-radius: 20 20 0 0;
-    -fx-padding: 8 15 8 15;
+    -fx-background-radius: 14 14 0 0;
+    -fx-border-radius: 14 14 0 0;
+    -fx-padding: 6 12 6 12;
     -fx-border-color: #1e293b;
     -fx-border-width: 1 1 0 1;
+    -fx-spacing: 4;
 }
 
 .add-button {
     -fx-background-color: #2563eb;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 10 20;
-    -fx-background-radius: 12;
+    -fx-padding: 9 18;
+    -fx-background-radius: 10;
     -fx-cursor: hand;
     -fx-font-size: 13px;
+    -fx-graphic-text-gap: 6;
 }
 
 .add-button:hover {
@@ -55,9 +61,10 @@
     -fx-background-color: transparent;
     -fx-text-fill: #94a3b8;
     -fx-font-weight: bold;
-    -fx-padding: 8 20;
-    -fx-background-radius: 25;
+    -fx-padding: 7 16;
+    -fx-background-radius: 20;
     -fx-cursor: hand;
+    -fx-font-size: 13px;
 }
 
 .tab-button.active {
@@ -68,13 +75,15 @@
 /* --- TABLA --- */
 .custom-table {
     -fx-background-color: #0f172a;
-    -fx-background-radius: 0 20 20 20;
-    -fx-border-radius: 0 20 20 20;
-    -fx-padding: 10;
+    -fx-background-radius: 0 14 14 14;
+    -fx-border-radius: 0 14 14 14;
+    -fx-padding: 0 8 8 8;
     -fx-border-color: #1e293b;
 }
 
-.custom-table .column-header-background { -fx-background-color: transparent; }
+.custom-table .column-header-background {
+    -fx-background-color: transparent;
+}
 
 .custom-table .column-header {
     -fx-background-color: transparent;
@@ -84,8 +93,9 @@
 }
 
 .custom-table .column-header .label {
-    -fx-text-fill: #9F9F9F;
+    -fx-text-fill: #64748b;
     -fx-font-weight: bold;
+    -fx-font-size: 12px;
     -fx-alignment: CENTER_LEFT;
 }
 
@@ -93,26 +103,35 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent #1e293b transparent;
     -fx-border-width: 0 0 1 0;
-    -fx-cell-size: 65px;
+    -fx-cell-size: 68px;
 }
 
 .custom-table .table-row-cell:filled:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-background-color: rgba(255, 255, 255, 0.025);
 }
 
 .custom-table .table-cell {
     -fx-text-fill: white;
-    -fx-font-size: 14;
+    -fx-font-size: 13px;
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 0 0 0 10;
     -fx-border-color: transparent;
 }
 
-/* --- VISTA DE DEPORTES --- */
+.custom-table .scroll-bar:vertical {
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+}
+.custom-table .scroll-bar:horizontal {
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}
+
+/* --- VISTA DEPORTES --- */
 .scroll-deportes {
     -fx-background-color: #0f172a;
-    -fx-background-radius: 0 20 20 20;
-    -fx-border-radius: 0 20 20 20;
+    -fx-background-radius: 0 14 14 14;
+    -fx-border-radius: 0 14 14 14;
     -fx-border-color: #1e293b;
     -fx-border-width: 1;
 }
@@ -123,8 +142,8 @@
     -fx-background-color: rgba(255, 255, 255, 0.02);
     -fx-border-color: #1e293b;
     -fx-border-width: 1;
-    -fx-border-radius: 15;
-    -fx-background-radius: 15;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
     -fx-padding: 20;
     -fx-alignment: CENTER;
     -fx-cursor: hand;
@@ -136,32 +155,55 @@
 }
 
 /* --- PAGINADOR --- */
+.pagination-container {
+    -fx-padding: 4 0 2 0;
+}
+
 .custom-pagination {
     -fx-page-information-visible: false;
-    -fx-padding: 5 0 0 0;
+    -fx-padding: 0;
 }
 
 .custom-pagination .control-box {
     -fx-background-color: #0f172a;
-    -fx-padding: 5 15;
-    -fx-background-radius: 12;
+    -fx-padding: 4 10;
+    -fx-background-radius: 20;
     -fx-border-color: #1e293b;
-    -fx-border-radius: 12;
+    -fx-border-radius: 20;
 }
 
-.custom-pagination .toggle-button, .custom-pagination .button {
+.custom-pagination .toggle-button,
+.custom-pagination .button {
     -fx-background-color: transparent;
     -fx-text-fill: #94a3b8;
     -fx-cursor: hand;
+    -fx-padding: 5 10;
+    -fx-font-size: 13px;
+    -fx-background-radius: 20;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
 }
 
 .custom-pagination .toggle-button:selected {
     -fx-background-color: #2563eb;
     -fx-text-fill: white;
-    -fx-background-radius: 8;
+    -fx-background-radius: 20;
 }
 
 /* --- OTROS --- */
-.logout-btn { -fx-background-color: transparent; -fx-padding: 8; -fx-cursor: hand; }
-.table-text-bold { -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; }
-.table-text-sub { -fx-text-fill: #9F9F9F; -fx-font-size: 11px; }
+.logout-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 8;
+    -fx-cursor: hand;
+}
+
+.table-text-bold {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.table-text-sub {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
+}

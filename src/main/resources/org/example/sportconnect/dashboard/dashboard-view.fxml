@@ -8,32 +8,33 @@
 
 <VBox styleClass="main-bg" stylesheets="@../base.css, @dashboard.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.sportconnect.controllers.DashboardController">
     <children>
+        <!-- TOP BAR -->
         <HBox alignment="CENTER_LEFT" styleClass="top-bar">
             <padding>
-                <Insets bottom="15.0" left="40.0" right="40.0" top="15.0" />
+                <Insets bottom="12.0" left="30.0" right="30.0" top="12.0" />
             </padding>
             <children>
                 <VBox spacing="-10">
                     <children>
                         <HBox alignment="CENTER_LEFT">
-                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 24;" text="Sp" />
-                            <Text fill="#2563eb" style="-fx-font-weight: 900; -fx-font-size: 24;" text="o" />
-                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 24;" text="rt" />
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" translateX="12">
-                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 22;" text="C" />
+                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 22;" text="Sp" />
                             <Text fill="#2563eb" style="-fx-font-weight: 900; -fx-font-size: 22;" text="o" />
-                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 22;" text="nnect" />
+                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 22;" text="rt" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" translateX="10">
+                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 20;" text="C" />
+                            <Text fill="#2563eb" style="-fx-font-weight: 900; -fx-font-size: 20;" text="o" />
+                            <Text fill="WHITE" style="-fx-font-weight: 900; -fx-font-size: 20;" text="nnect" />
                         </HBox>
                     </children>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS" />
-                <HBox alignment="CENTER" spacing="15">
+                <HBox alignment="CENTER" spacing="12">
                     <children>
                         <Label fx:id="lblUserName" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" text="Usuario" />
                         <Button onAction="#handleLogout" styleClass="logout-btn">
                             <graphic>
-                                <FontIcon iconColor="#9F9F9F" iconLiteral="fas-sign-out-alt" iconSize="22" />
+                                <FontIcon iconColor="#9F9F9F" iconLiteral="fas-sign-out-alt" iconSize="20" />
                             </graphic>
                         </Button>
                     </children>
@@ -41,73 +42,73 @@
             </children>
         </HBox>
 
-        <VBox spacing="25.0" VBox.vgrow="ALWAYS">
+        <!-- CONTENIDO PRINCIPAL -->
+        <VBox spacing="12.0" VBox.vgrow="ALWAYS">
             <padding>
-                <Insets bottom="15.0" left="40.0" right="40.0" top="15.0" />
+                <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
             </padding>
             <children>
 
-                <GridPane hgap="20.0" vgap="20.0">
+                <!-- GRID 2x2 STATS - altura mínima -->
+                <GridPane hgap="12.0" vgap="10.0">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="NEVER" />
                     </rowConstraints>
                     <children>
                         <VBox styleClass="stat-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <HBox alignment="CENTER_LEFT">
-                                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 14;" text="Reservas activas" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalReservas" style="-fx-font-size: 36; -fx-font-weight: bold;" text="0" textFill="WHITE" />
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-size: 12;" text="Reservas activas" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalReservas" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
-                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-calendar-check" iconSize="24" />
+                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-calendar-check" iconSize="20" />
                                 </StackPane>
                             </HBox>
                         </VBox>
                         <VBox styleClass="stat-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <HBox alignment="CENTER_LEFT">
-                                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 14;" text="Usuarios" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalUsuarios" style="-fx-font-size: 36; -fx-font-weight: bold;" text="0" textFill="WHITE" />
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-size: 12;" text="Usuarios" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalUsuarios" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
-                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-users" iconSize="24" />
+                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-users" iconSize="20" />
                                 </StackPane>
                             </HBox>
                         </VBox>
                         <VBox styleClass="stat-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                            <HBox alignment="CENTER_LEFT">
-                                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 14;" text="Pistas" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalPistas" style="-fx-font-size: 36; -fx-font-weight: bold;" text="0" textFill="WHITE" />
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-size: 12;" text="Pistas" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalPistas" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
-                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-th-large" iconSize="24" />
+                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-th-large" iconSize="20" />
                                 </StackPane>
                             </HBox>
                         </VBox>
                         <VBox styleClass="stat-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <HBox alignment="CENTER_LEFT">
-                                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 14;" text="Ingresos" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalIngresos" style="-fx-font-size: 36; -fx-font-weight: bold;" text="0€" textFill="WHITE" />
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-size: 12;" text="Ingresos" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalIngresos" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0€" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
-                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-money-bill-wave" iconSize="24" />
+                                    <FontIcon iconColor="#2563eb" iconLiteral="fas-money-bill-wave" iconSize="20" />
                                 </StackPane>
                             </HBox>
                         </VBox>
                     </children>
                 </GridPane>
 
+                <!-- SECCIÓN TABS + TABLA -->
                 <VBox spacing="0" VBox.vgrow="ALWAYS">
-                    <VBox.margin>
-                        <Insets top="20.0" />
-                    </VBox.margin>
                     <children>
                         <HBox alignment="BOTTOM_LEFT" styleClass="tab-header-container">
                             <children>
@@ -119,15 +120,13 @@
                                         <Button fx:id="btnTabUsuarios" onAction="#handleTabChange" styleClass="tab-button" text="Usuarios" />
                                     </children>
                                 </HBox>
-
                                 <Region HBox.hgrow="ALWAYS" />
-
                                 <Button fx:id="btnAddAction" onAction="#handleAdd" styleClass="add-button" text="Nuevo Registro">
                                     <graphic>
-                                        <FontIcon iconLiteral="fas-plus" iconColor="WHITE" iconSize="14" />
+                                        <FontIcon iconLiteral="fas-plus" iconColor="WHITE" iconSize="13" />
                                     </graphic>
                                     <HBox.margin>
-                                        <Insets bottom="10.0" />
+                                        <Insets bottom="8.0" />
                                     </HBox.margin>
                                 </Button>
                             </children>
@@ -142,7 +141,6 @@
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                             </columnResizePolicy>
                                         </TableView>
-
                                         <ScrollPane fx:id="scrollDeportes" fitToWidth="true" styleClass="scroll-deportes" visible="false">
                                             <content>
                                                 <TilePane fx:id="tileDeportes" hgap="20.0" prefColumns="4" vgap="20.0">
@@ -154,8 +152,7 @@
                                         </ScrollPane>
                                     </children>
                                 </StackPane>
-
-                                <HBox alignment="CENTER">
+                                <HBox alignment="CENTER" styleClass="pagination-container">
                                     <Pagination fx:id="pagination" maxPageIndicatorCount="5" styleClass="custom-pagination" />
                                 </HBox>
                             </children>
