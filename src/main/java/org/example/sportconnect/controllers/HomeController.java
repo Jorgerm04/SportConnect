@@ -6,12 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,48 +42,52 @@ public class HomeController {
         containerProximas.getChildren().clear();
         containerHistorial.getChildren().clear();
 
-        // 1. Obtener el usuario actual de la sesión
         User currentUser = Session.getInstance().getUser();
-        if (currentUser == null) return; // Seguridad por si no hay sesión
+        if (currentUser == null) return;
         lblUserName.setText(currentUser.getName());
 
         List<Reservation> todas = reservationService.getAllReservations();
         LocalDate hoy = LocalDate.now();
 
         for (Reservation res : todas) {
-            // 2. FILTRO: Solo mostramos la reserva si pertenece al usuario logueado
-            if (res.getUser().getId() == currentUser.getId()) {
-
-                boolean esPasada = res.getDate().isBefore(hoy) || res.isCancelled();
+            if (res.getUser().getId().equals(currentUser.getId())) {
+                boolean esPasada = res.getDate().isBefore(hoy) ||
+                        (res.getDate().isEqual(hoy) && res.getEndHour().isBefore(java.time.LocalTime.now())) ||
+                        res.isCancelled();
                 HBox tarjeta = crearTarjetaReserva(res, esPasada);
-
-                if (esPasada) {
-                    containerHistorial.getChildren().add(tarjeta);
-                } else {
-                    containerProximas.getChildren().add(tarjeta);
-                }
+                if (esPasada) containerHistorial.getChildren().add(tarjeta);
+                else containerProximas.getChildren().add(tarjeta);
             }
+        }
+
+        // Mensajes vacíos
+        if (containerProximas.getChildren().isEmpty()) {
+            Label lbl = new Label("No tienes reservas próximas");
+            lbl.setStyle("-fx-text-fill: #475569; -fx-font-size: 13px;");
+            containerProximas.getChildren().add(lbl);
+        }
+        if (containerHistorial.getChildren().isEmpty()) {
+            Label lbl = new Label("No hay reservas en el historial");
+            lbl.setStyle("-fx-text-fill: #475569; -fx-font-size: 13px;");
+            containerHistorial.getChildren().add(lbl);
         }
     }
 
     private HBox crearTarjetaReserva(Reservation res, boolean esHistorial) {
-        HBox card = new HBox(0); // Spacing 0 para que el indicador pegue al borde
+        HBox card = new HBox(0);
         card.getStyleClass().add("reservation-card");
         card.setAlignment(Pos.CENTER_LEFT);
 
-        // 1. El Indicador lateral
         Region indicator = new Region();
-        indicator.getStyleClass().add(esHistorial ? "indicator-history" : "indicator-active");
-        // Hacemos que el indicador crezca verticalmente para llenar la card
+        indicator.getStyleClass().add(res.isCancelled() ? "indicator-cancelled" : esHistorial ? "indicator-history" : "indicator-active");
         VBox.setVgrow(indicator, Priority.ALWAYS);
 
-        // 2. Contenedor para el contenido (Texto, iconos, botón)
-        HBox content = new HBox(25); // Este mantiene el espacio entre elementos
+        HBox content = new HBox(25);
         content.getStyleClass().add("card-content");
         content.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(content, Priority.ALWAYS);
 
-        // --- Bloque de Deporte ---
+        // Deporte + pista
         VBox infoSport = new VBox(2);
         Label lblSport = new Label(res.getCourt().getSport().getName());
         lblSport.getStyleClass().add("sport-name");
@@ -96,33 +96,60 @@ public class HomeController {
         infoSport.getChildren().addAll(lblSport, lblCourt);
         infoSport.setMinWidth(160);
 
-        // --- Bloque Fecha/Hora (puedes unirlos como en tu última foto) ---
+        // Fecha y hora
         HBox infoBox = new HBox(15);
         infoBox.setAlignment(Pos.CENTER_LEFT);
-
         FontIcon iconCal = new FontIcon("far-calendar-alt");
         iconCal.setIconColor(Color.web("#64748b"));
-        Label lblData = new Label(res.getDate().format(formatter) + " - " + res.getStartHour());
+        Label lblData = new Label(res.getDate().format(formatter) + "  ·  " + res.getStartHour() + " - " + res.getEndHour());
         lblData.getStyleClass().add("info-text");
         infoBox.getChildren().addAll(iconCal, lblData);
 
+        // Estado si está cancelada
+        if (res.isCancelled()) {
+            Label lblCancelada = new Label("Cancelada");
+            lblCancelada.setStyle("-fx-text-fill:#ef4444;-fx-background-color:rgba(239,68,68,0.1);-fx-padding:3 8;-fx-background-radius:5;-fx-font-size:11px;-fx-font-weight:bold;");
+            infoBox.getChildren().add(lblCancelada);
+        }
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        // Añadimos todo al contenedor de contenido
         content.getChildren().addAll(infoSport, infoBox, spacer);
 
-        // Botón cancelar
+        // Botón cancelar — solo en reservas activas futuras
         if (!esHistorial && !res.isCancelled()) {
-            Button btnCancel = new Button("Cancelar reserva", new FontIcon("far-times-circle"));
-            btnCancel.getStyleClass().add("cancel-link");
+            org.kordamp.ikonli.javafx.FontIcon icoCancel = new org.kordamp.ikonli.javafx.FontIcon("fas-times");
+            icoCancel.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoCancel.setIconSize(11);
+            Button btnCancel = new Button("Cancelar", icoCancel);
+            btnCancel.setStyle("-fx-background-color:rgba(239,68,68,0.15);-fx-text-fill:#ef4444;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+            btnCancel.setOnAction(e -> confirmarCancelacion(res));
             content.getChildren().add(btnCancel);
         }
 
-        // FINALMENTE: Añadimos el indicador y el contenido a la card principal
         card.getChildren().addAll(indicator, content);
-
         return card;
+    }
+
+    private void confirmarCancelacion(Reservation res) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Cancelar reserva");
+        alert.setHeaderText("¿Cancelar esta reserva?");
+        alert.setContentText(res.getCourt().getSport().getName() + " · " +
+                res.getCourt().getName() + "\n" +
+                res.getDate().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("es", "ES"))) +
+                "  ·  " + res.getStartHour() + " - " + res.getEndHour());
+
+        // Estilo oscuro
+        DialogPane dp = alert.getDialogPane();
+        var css = getClass().getResource("/org/example/sportconnect/base.css");
+        if (css != null) { dp.getStylesheets().add(css.toExternalForm()); dp.getStyleClass().add("custom-alert"); }
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                reservationService.cancelReservation(res.getId());
+                cargarDatos(); // Refrescar la lista
+            }
+        });
     }
 
     @FXML
@@ -130,9 +157,6 @@ public class HomeController {
         abrirModal("/org/example/sportconnect/reservation-form/reservation-form-view.fxml", "Nueva Reserva");
     }
 
-    /**
-     * Cierra la sesión y vuelve al login
-     */
     @FXML
     private void handleLogout(ActionEvent event) {
         try {
@@ -141,16 +165,13 @@ public class HomeController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(loginScene);
             stage.centerOnScreen();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void abrirModal(String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Scene scene = new Scene(loader.load());
-
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -160,10 +181,7 @@ public class HomeController {
             stage.setScene(scene);
             stage.setMaximized(true);
             stage.showAndWait();
-
             cargarDatos();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 }

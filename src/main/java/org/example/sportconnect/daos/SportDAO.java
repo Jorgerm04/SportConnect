@@ -1,30 +1,33 @@
 package org.example.sportconnect.daos;
 
 import org.example.sportconnect.models.Sport;
+import org.example.sportconnect.utils.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Transaction;
+import java.util.Collections;
 import java.util.List;
 
-public class SportDAO {
-    private final SessionFactory factory;
+public class SportDAO extends GenericDAO<Sport> {
 
     public SportDAO() {
-        this.factory = new Configuration().configure().buildSessionFactory();
+        super(Sport.class);
     }
 
     public List<Sport> getAllSports() {
-        try (Session session = factory.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM Sport", Sport.class).list();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 
     public Sport getSportById(Long id) {
-        try (Session session = factory.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(Sport.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

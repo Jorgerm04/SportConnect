@@ -3,38 +3,36 @@ package org.example.sportconnect.services;
 import org.example.sportconnect.daos.UserDAO;
 import org.example.sportconnect.models.User;
 import org.mindrot.jbcrypt.BCrypt;
+import java.util.List;
 
 public class UserService {
-    private final UserDAO userDAO;
+    private final UserDAO userDAO = new UserDAO();
 
-    public UserService() {
-        this.userDAO = new UserDAO();
-    }
-
-    /**
-     * Lógica de inicio de sesión
-     * @return El objeto User si es correcto, null si falla
-     */
     public User login(String email, String plainPassword) {
-        // 1. Buscamos al usuario por email usando el DAO
         User user = userDAO.findByEmail(email);
+        if (user != null && BCrypt.checkpw(plainPassword, user.getPassword())) return user;
+        return null;
+    }
 
-        // 2. Si existe, comprobamos la contraseña encriptada
-        if (user != null) {
-            if (BCrypt.checkpw(plainPassword, user.getPassword())) {
-                return user; // Login exitoso
-            }
+    public String getTotalUsersCount() { return String.valueOf(userDAO.countTotalUsers()); }
+    public List<User> getAllUsers() { return userDAO.getAllUsers(); }
+
+    public boolean saveUser(String name, String lastName, String email, String phone, String plainPassword, boolean isAdmin) {
+        if (userDAO.findByEmail(email) != null) return false;
+        User user = new User();
+        user.setName(name); user.setLastName(lastName); user.setEmail(email);
+        user.setPhone(phone); user.setPassword(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
+        user.setAdmin(isAdmin);
+        userDAO.save(user);
+        return true;
+    }
+
+    public boolean updateUser(User user, String newPassword) {
+        if (newPassword != null && !newPassword.isBlank()) {
+            user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         }
-        return null; // Credenciales incorrectas
+        return userDAO.update(user);
     }
 
-    public String getTotalUsersCount() {
-        // Llama al DAO de usuario para obtener el count
-        long count = userDAO.countTotalUsers();
-        return String.valueOf(count);
-    }
-
-    public java.util.List<User> getAllUsers() {
-        return userDAO.getAllUsers();
-    }
+    public boolean deleteUser(Long id) { return userDAO.delete(id); }
 }

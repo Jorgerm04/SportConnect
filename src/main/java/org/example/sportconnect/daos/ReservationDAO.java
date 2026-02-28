@@ -1,105 +1,132 @@
 package org.example.sportconnect.daos;
 
+import org.example.sportconnect.models.Court;
 import org.example.sportconnect.models.Reservation;
+import org.example.sportconnect.utils.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
-public class ReservationDAO {
+public class ReservationDAO extends GenericDAO<Reservation> {
 
-    private final SessionFactory factory;
 
     public ReservationDAO() {
-        // Inicializa la SessionFactory (Asegúrate de tener tu hibernate.cfg.xml configurado)
-        this.factory = new Configuration().configure().buildSessionFactory();
+        super(Reservation.class);
     }
 
-    /**
-     * Obtiene el total de reservas que NO han sido canceladas.
-     * Útil para el Label lblTotalReservas del Dashboard.
-     */
     public long countActiveReservations() {
-        try (Session session = factory.openSession()) {
-            String hql = "SELECT count(r) FROM Reservation r WHERE r.cancelled = false";
-            Query<Long> query = session.createQuery(hql, Long.class);
-            return query.getSingleResult();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                    "SELECT count(r) FROM Reservation r WHERE r.cancelled = false", Long.class
+            ).getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    /**
-     * Obtiene todas las reservas para llenar la TableView.
-     */
     public List<Reservation> getAllReservations() {
-        try (Session session = factory.openSession()) {
-            return session.createQuery("from Reservation", Reservation.class).list();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                    "SELECT r FROM Reservation r JOIN FETCH r.user JOIN FETCH r.court ORDER BY r.date DESC, r.startHour DESC",
+                    Reservation.class
+            ).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public Reservation findById(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(Reservation.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    /**
-     * Ejemplo de suma de ingresos (asumiendo que Court tiene un precio)
-     * Si no tienes campo precio, este es un ejemplo de cómo se haría.
-     */
     public Double getTotalEarnings() {
-        try (Session session = factory.openSession()) {
-            // HQL uniendo con la tabla Court para sumar precios
-            String hql = "SELECT sum(r.court.price) FROM Reservation r WHERE r.cancelled = false";
-            return session.createQuery(hql, Double.class).getSingleResult();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Double result = session.createQuery(
+                    "SELECT sum(r.court.price) FROM Reservation r WHERE r.cancelled = false", Double.class
+            ).getSingleResult();
+            return result != null ? result : 0.0;
         } catch (Exception e) {
+            e.printStackTrace();
             return 0.0;
         }
     }
-    /**
-     * Busca reservas para una pista y fecha específicas que no estén canceladas.
-     */
-    public List<Reservation> findByCourtAndDate(org.example.sportconnect.models.Court court, java.time.LocalDate date) {
-        try (Session session = factory.openSession()) {
-            String hql = "FROM Reservation r WHERE r.court.id = :courtId " +
-                    "AND r.date = :date " +
-                    "AND r.cancelled = false";
 
-            Query<Reservation> query = session.createQuery(hql, Reservation.class);
+    public List<Reservation> findByCourtAndDate(Court court, LocalDate date) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Reservation> query = session.createQuery(
+                    "FROM Reservation r WHERE r.court.id = :courtId AND r.date = :date AND r.cancelled = false",
+                    Reservation.class
+            );
             query.setParameter("courtId", court.getId());
             query.setParameter("date", date);
-
             return query.list();
         } catch (Exception e) {
             e.printStackTrace();
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
     }
 
-    public boolean save(Reservation reservation) {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = factory.openSession();
-            transaction = session.beginTransaction();
+    // Busca reservas ocupadas excluyendo una reserva concreta (para edición)
+    public List<Reservation> findByCourtAndDateExcluding(Court court, LocalDate date, Long excludeId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Reservation> query = session.createQuery(
+                    "FROM Reservation r WHERE r.court.id = :courtId AND r.date = :date AND r.cancelled = false AND r.id != :excludeId",
+                    Reservation.class
+            );
+            query.setParameter("courtId", court.getId());
+            query.setParameter("date", date);
+            query.setParameter("excludeId", excludeId);
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
 
-            session.persist(reservation); // Usar persist es preferible en Hibernate 6
-
-            transaction.commit();
+    public boolean cancel(Long id) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            Reservation r = session.get(Reservation.class, id);
+            if (r != null) {
+                r.setCancelled(true);
+                session.merge(r);
+            }
+            tx.commit();
             return true;
         } catch (Exception e) {
-            // Solo intentamos rollback si la transacción está activa y la sesión abierta
-            if (transaction != null && transaction.getStatus().canRollback()) {
-                transaction.rollback();
-            }
+            if (tx != null && tx.getStatus().canRollback()) tx.rollback();
             e.printStackTrace();
             return false;
-        } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
+        }
+    }
+
+    public boolean reactivate(Long id) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            Reservation r = session.get(Reservation.class, id);
+            if (r != null) {
+                r.setCancelled(false);
+                session.merge(r);
             }
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx != null && tx.getStatus().canRollback()) tx.rollback();
+            e.printStackTrace();
+            return false;
         }
     }
 }

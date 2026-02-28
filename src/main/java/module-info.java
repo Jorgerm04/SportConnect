@@ -13,6 +13,7 @@ module org.example.sportconnect {
     opens org.example.sportconnect.models to org.hibernate.orm.core;
     // Abrir controladores a JavaFX
     opens org.example.sportconnect.controllers to javafx.fxml;
+    opens org.example.sportconnect.components to javafx.fxml;
     // Si tienes MainApp en la raíz:
     opens org.example.sportconnect to javafx.fxml;
 

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane styleClass="form-root" stylesheets="@../base.css, @forms.css"
+           xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.sportconnect.controllers.UserFormController">
+    <VBox alignment="CENTER">
+        <VBox styleClass="form-card" maxWidth="460" spacing="20">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color:#132651;-fx-background-radius:10;-fx-min-width:40;-fx-min-height:40;-fx-max-width:40;-fx-max-height:40;">
+                    <FontIcon iconLiteral="fas-user-plus" iconColor="#2563eb" iconSize="18"/>
+                </StackPane>
+                <Label fx:id="lblTitulo" styleClass="form-title" text="Nuevo Usuario"/>
+            </HBox>
+
+            <HBox spacing="12">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="NOMBRE"/>
+                    <TextField fx:id="txtNombre" styleClass="form-input" promptText="Nombre"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="APELLIDOS"/>
+                    <TextField fx:id="txtApellidos" styleClass="form-input" promptText="Apellidos"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="6">
+                <Label styleClass="form-label" text="EMAIL"/>
+                <TextField fx:id="txtEmail" styleClass="form-input" promptText="correo@ejemplo.com"/>
+            </VBox>
+
+            <HBox spacing="12">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="TELÉFONO (OPCIONAL)"/>
+                    <TextField fx:id="txtTelefono" styleClass="form-input" promptText="Ej: 600000000"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="CONTRASEÑA"/>
+                    <PasswordField fx:id="txtPassword" styleClass="form-input" promptText="Mínimo 4 caracteres"/>
+                    <Label fx:id="lblPasswordHint" styleClass="form-label"
+                           text="Dejar vacío para no cambiar" visible="false"/>
+                </VBox>
+            </HBox>
+
+            <!-- Toggle Admin -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <HBox fx:id="toggleContainer" alignment="CENTER_LEFT"/>
+                <VBox spacing="2">
+                    <Label text="Administrador" style="-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:13px;"/>
+                    <Label text="Acceso completo al panel de administración" styleClass="form-label"/>
+                </VBox>
+            </HBox>
+
+            <Label fx:id="lblError" styleClass="lbl-error" visible="false" wrapText="true"/>
+
+            <HBox spacing="10">
+                <Button fx:id="btnGuardar" styleClass="btn-primary" text="Crear Usuario"
+                        onAction="#handleGuardar" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button styleClass="btn-secondary" text="Cancelar"
+                        onAction="#handleCancelar" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            </HBox>
+
+        </VBox>
+    </VBox>
+</StackPane>

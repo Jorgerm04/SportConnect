@@ -93,3 +93,9 @@
 }
 
 .logout-btn { -fx-background-color: transparent; -fx-cursor: hand; }
+.indicator-cancelled {
+    -fx-background-color: #ef4444;
+    -fx-background-radius: 10 0 0 10;
+    -fx-min-width: 8;
+    -fx-pref-height: 80;
+}

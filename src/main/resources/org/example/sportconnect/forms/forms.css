@@ -1,0 +1,90 @@
+.form-root {
+    -fx-background-color: #020617;
+}
+.form-card {
+    -fx-background-color: #0f172a;
+    -fx-background-radius: 16;
+    -fx-border-color: #1e293b;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 32 36;
+}
+.form-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.form-label {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+.form-input {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #475569;
+    -fx-border-color: #334155;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14;
+    -fx-font-size: 13px;
+    -fx-pref-height: 40px;
+}
+.form-input:focused {
+    -fx-border-color: #2563eb;
+    -fx-background-color: #1e293b;
+}
+.form-combo {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-pref-height: 40px;
+}
+.form-combo .list-cell {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: white;
+    -fx-padding: 6 12;
+}
+.form-combo .list-view {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+}
+.form-combo:focused { -fx-border-color: #2563eb; }
+.form-combo .arrow-button { -fx-background-color: transparent; }
+.form-combo .arrow { -fx-background-color: #94a3b8; }
+.btn-primary {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-primary:hover { -fx-background-color: #1d4ed8; }
+.btn-secondary {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-border-color: #334155;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-secondary:hover { -fx-background-color: #334155; -fx-text-fill: white; }
+.lbl-error {
+    -fx-text-fill: #ef4444;
+    -fx-font-size: 12px;
+}
+.check-box .box {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+.check-box:selected .box { -fx-background-color: #2563eb; -fx-border-color: #2563eb; }
+.check-box .mark { -fx-background-color: white; }
+.check-box .label { -fx-text-fill: #cbd5e1; -fx-font-size: 13px; }
