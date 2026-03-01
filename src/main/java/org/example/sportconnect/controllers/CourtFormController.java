@@ -24,7 +24,7 @@ public class CourtFormController {
 
     @FXML
     public void initialize() {
-        comboDeporte.setItems(FXCollections.observableArrayList(sportService.findAllSports()));
+        comboDeporte.setItems(FXCollections.observableArrayList(sportService.findAll()));
         comboDeporte.setCellFactory(lv -> new ListCell<>() {
             @Override protected void updateItem(Sport item, boolean empty) {
                 super.updateItem(item, empty);
@@ -64,9 +64,9 @@ public class CourtFormController {
             pistaAEditar.setName(nombre);
             pistaAEditar.setSport(deporte);
             pistaAEditar.setPrice(precio);
-            ok = courtService.updateCourt(pistaAEditar);
+            ok = courtService.update(pistaAEditar);
         } else {
-            ok = courtService.saveCourt(nombre, deporte, precio);
+            ok = courtService.save(nombre, deporte, precio);
         }
 
         if (ok) cerrar();

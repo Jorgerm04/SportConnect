@@ -3,37 +3,44 @@ package org.example.sportconnect.services;
 import org.example.sportconnect.daos.ReservationDAO;
 import org.example.sportconnect.models.Court;
 import org.example.sportconnect.models.Reservation;
-
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
 public class ReservationService {
+
     private final ReservationDAO reservationDAO = new ReservationDAO();
 
-    public String getTotalActiveReservationsCount() { return String.valueOf(reservationDAO.countActiveReservations()); }
-    public List<Reservation> getAllReservations() { return reservationDAO.getAllReservations(); }
+    /** Devuelve todas las reservas */
+    public List<Reservation> findAll() { return reservationDAO.findAll(); }
 
-    public String getFormattedTotalEarnings() {
-        Double earnings = reservationDAO.getTotalEarnings();
-        if (earnings == null) earnings = 0.0;
-        return String.format("%.2f€", earnings);
-    }
+    /** Total de reservas activas formateado para el dashboard */
+    public String countActiveFormatted() { return String.valueOf(reservationDAO.countActive()); }
 
+    /** Ingresos totales formateados para el dashboard */
+    public String earningsFormatted() { return String.format("%.2f€", reservationDAO.sumEarnings()); }
+
+    /** Reservas activas de una pista en una fecha */
     public List<Reservation> findByCourtAndDate(Court court, LocalDate date) {
         if (court == null || date == null) return Collections.emptyList();
         return reservationDAO.findByCourtAndDate(court, date);
     }
 
+    /** Reservas activas de una pista en una fecha, excluyendo una (para edición) */
     public List<Reservation> findByCourtAndDateExcluding(Court court, LocalDate date, Long excludeId) {
         if (court == null || date == null) return Collections.emptyList();
         return reservationDAO.findByCourtAndDateExcluding(court, date, excludeId);
     }
 
-    public boolean makeReservation(Reservation reservation) { return reservationDAO.save(reservation); }
+    /** Guarda una nueva reserva */
+    public boolean save(Reservation reservation) { return reservationDAO.save(reservation); }
 
-    public boolean updateReservation(Reservation reservation) { return reservationDAO.update(reservation); }
+    /** Actualiza una reserva existente */
+    public boolean update(Reservation reservation) { return reservationDAO.update(reservation); }
 
-    public boolean cancelReservation(Long id) { return reservationDAO.cancel(id); }
-    public boolean reactivateReservation(Long id) { return reservationDAO.reactivate(id); }
+    /** Cancela una reserva */
+    public boolean cancel(Long id) { return reservationDAO.cancel(id); }
+
+    /** Reactiva una reserva cancelada */
+    public boolean reactivate(Long id) { return reservationDAO.reactivate(id); }
 }

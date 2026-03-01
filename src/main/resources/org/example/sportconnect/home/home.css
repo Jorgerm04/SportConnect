@@ -1,7 +1,4 @@
-/* Fondo general */
-.main-bg {
-    -fx-background-color: #020617;
-}
+.main-bg { -fx-background-color: #020617; }
 
 .top-bar {
     -fx-background-color: #020617;
@@ -9,43 +6,50 @@
     -fx-border-width: 0 0 1 0;
 }
 
-/* ScrollPane transparente para ver el fondo */
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background: transparent;
-}
-.scroll-pane .viewport {
-    -fx-background-color: transparent;
+.lbl-username {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
 }
 
-/* Banner: Tamaños reducidos */
+.scroll-transparent {
+    -fx-background-color: #020617;
+    -fx-background: #020617;
+    -fx-border-color: transparent;
+}
+.scroll-transparent .viewport              { -fx-background-color: #020617; }
+.scroll-transparent .scroll-bar:vertical   { -fx-background-color: transparent; }
+.scroll-transparent .scroll-bar:horizontal { -fx-background-color: transparent; }
+.scroll-transparent .corner                { -fx-background-color: #020617; }
+
 .welcome-banner {
     -fx-background-color: #2563eb;
-    -fx-background-radius: 15; /* Bordes un poco menos exagerados */
+    -fx-background-radius: 15;
 }
 
 .banner-title {
     -fx-text-fill: white;
-    -fx-font-size: 26px; /* Bajado de 42px */
+    -fx-font-size: 26px;
     -fx-font-weight: 800;
 }
 
 .banner-subtitle {
     -fx-text-fill: rgba(255, 255, 255, 0.9);
-    -fx-font-size: 14px; /* Bajado de 18px */
+    -fx-font-size: 14px;
 }
 
 .banner-add-button {
     -fx-background-color: #e2e8f0;
     -fx-text-fill: #2563eb;
     -fx-font-weight: 800;
-    -fx-font-size: 16px; /* Bajado de 24px */
-    -fx-padding: 10 25;  /* Padding más discreto */
+    -fx-font-size: 16px;
+    -fx-padding: 10 25;
     -fx-background-radius: 10;
     -fx-cursor: hand;
 }
+.banner-add-button:hover   { -fx-background-color: #cbd5e1; }
+.banner-add-button:pressed { -fx-background-color: #94a3b8; }
 
-/* Títulos de sección */
 .section-title {
     -fx-text-fill: white;
     -fx-font-size: 16px;
@@ -55,16 +59,14 @@
 .reservation-card {
     -fx-background-color: #0f172a;
     -fx-background-radius: 10;
-    -fx-padding: 0 25 0 0; /* Arriba, Derecha, Abajo, Izquierda (0) */
-    -fx-overflow-hidden: true; /* Para que el indicador respete el radio del borde */
+    -fx-padding: 0 25 0 0;
 }
 
-/* Indicadores: Ahora deben rellenar el alto total y pegar al borde */
 .indicator-active {
     -fx-background-color: #2563eb;
-    -fx-background-radius: 10 0 0 10; /* Radio solo en las esquinas izquierdas */
+    -fx-background-radius: 10 0 0 10;
     -fx-min-width: 8;
-    -fx-pref-height: 80; /* Asegura que cubra el alto de la tarjeta */
+    -fx-pref-height: 80;
 }
 
 .indicator-history {
@@ -74,28 +76,46 @@
     -fx-pref-height: 80;
 }
 
-/* Añadimos un contenedor para el texto con su propio padding */
-.card-content {
-    -fx-padding: 15 0 15 20; /* Margen interno para separar el texto del indicador */
-}
-
-/* Textos dentro de la card */
-.sport-name { -fx-text-fill: white; -fx-font-weight: 700; -fx-font-size: 15px; }
-.court-name { -fx-text-fill: #64748b; -fx-font-size: 13px; }
-.info-text { -fx-text-fill: white; -fx-font-size: 13px; }
-
-.cancel-link {
-    -fx-background-color: transparent;
-    -fx-text-fill: #ef4444;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-cursor: hand;
-}
-
-.logout-btn { -fx-background-color: transparent; -fx-cursor: hand; }
 .indicator-cancelled {
     -fx-background-color: #ef4444;
     -fx-background-radius: 10 0 0 10;
     -fx-min-width: 8;
     -fx-pref-height: 80;
 }
+
+.card-content { -fx-padding: 15 0 15 20; }
+
+.sport-name  { -fx-text-fill: white;   -fx-font-weight: 700; -fx-font-size: 15px; }
+.court-name  { -fx-text-fill: #64748b; -fx-font-size: 13px; }
+.info-text   { -fx-text-fill: white;   -fx-font-size: 13px; }
+
+.badge-cancelled-card {
+    -fx-text-fill: #ef4444;
+    -fx-background-color: rgba(239, 68, 68, 0.1);
+    -fx-padding: 3 8;
+    -fx-background-radius: 5;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.btn-cancel {
+    -fx-background-color: rgba(239, 68, 68, 0.15);
+    -fx-text-fill: #ef4444;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 5;
+    -fx-content-display: LEFT;
+}
+.btn-cancel:hover   { -fx-background-color: rgba(239, 68, 68, 0.28); }
+.btn-cancel:pressed { -fx-background-color: rgba(239, 68, 68, 0.45); }
+
+.lbl-empty { -fx-text-fill: #475569; -fx-font-size: 13px; }
+
+.logout-btn { -fx-background-color: transparent; -fx-cursor: hand; }
+.logout-btn:hover   { -fx-opacity: 0.7; }
+.logout-btn:pressed { -fx-opacity: 0.5; }
+
+.logo-text { -fx-font-weight: 900; }

@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import org.example.sportconnect.models.*;
 import org.example.sportconnect.services.*;
 import org.example.sportconnect.utils.Session;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -48,13 +49,19 @@ public class DashboardController {
         actualizarEstadisticas();
         cargarTabReservas();
         btnAddAction.setText("Nueva Reserva");
+        // Accesibilidad: descripción de las pestañas para lectores de pantalla
+        btnTabReservas.setAccessibleText("Pestaña Reservas");
+        btnTabDeportes.setAccessibleText("Pestaña Deportes");
+        btnTabPistas.setAccessibleText("Pestaña Pistas");
+        btnTabUsuarios.setAccessibleText("Pestaña Usuarios");
+        btnAddAction.setAccessibleText("Crear nuevo registro");
     }
 
     private void actualizarEstadisticas() {
-        lblTotalReservas.setText(reservationService.getTotalActiveReservationsCount());
-        lblTotalIngresos.setText(reservationService.getFormattedTotalEarnings());
-        lblTotalUsuarios.setText(userService.getTotalUsersCount());
-        lblTotalPistas.setText(courtService.getTotalCourtsCount());
+        lblTotalReservas.setText(reservationService.countActiveFormatted());
+        lblTotalIngresos.setText(reservationService.earningsFormatted());
+        lblTotalUsuarios.setText(userService.countFormatted());
+        lblTotalPistas.setText(courtService.countFormatted());
     }
 
     private javafx.scene.Node createPage(int pageIndex) {
@@ -157,9 +164,8 @@ public class DashboardController {
                 super.updateItem(item, empty);
                 if (empty || !(getTableRow().getItem() instanceof Reservation r)) { setGraphic(null); return; }
                 Label lbl = new Label(r.isCancelled() ? "Cancelada" : "Activa");
-                String color = r.isCancelled() ? "#ef4444" : "#10b981";
-                String bg    = r.isCancelled() ? "rgba(239,68,68,0.1)" : "rgba(16,185,129,0.1)";
-                lbl.setStyle("-fx-text-fill:" + color + ";-fx-background-color:" + bg + ";-fx-padding:3 8;-fx-background-radius:5;");
+                lbl.getStyleClass().add(r.isCancelled() ? "badge-cancelled" : "badge-active");
+                lbl.setAccessibleText(r.isCancelled() ? "Reserva cancelada" : "Reserva activa");
                 setGraphic(lbl);
                 setAlignment(Pos.CENTER_LEFT);
             }
@@ -181,10 +187,8 @@ public class DashboardController {
                 org.kordamp.ikonli.javafx.FontIcon iconEditar = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
                 iconEditar.setIconColor(javafx.scene.paint.Color.web("#2563eb")); iconEditar.setIconSize(11);
                 Button btnEditar = new Button("Editar", iconEditar);
-                btnEditar.setStyle(
-                        "-fx-background-color:rgba(37,99,235,0.15);-fx-text-fill:#2563eb;" +
-                                "-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;" +
-                                "-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+                btnEditar.getStyleClass().add("btn-edit");
+                btnEditar.setAccessibleText("Editar reserva número " + r.getId());
                 btnEditar.setDisable(bloquearEdicion);
                 if (bloquearEdicion) btnEditar.setOpacity(0.3);
                 btnEditar.setOnAction(e -> abrirEdicionReserva(r));
@@ -193,11 +197,8 @@ public class DashboardController {
                 org.kordamp.ikonli.javafx.FontIcon iconToggle = new org.kordamp.ikonli.javafx.FontIcon(cancelada ? "fas-redo" : "fas-times");
                 iconToggle.setIconColor(javafx.scene.paint.Color.web(cancelada ? "#10b981" : "#ef4444")); iconToggle.setIconSize(11);
                 Button btnToggle = new Button(cancelada ? "Reactivar" : "Cancelar", iconToggle);
-                btnToggle.setStyle(
-                        "-fx-background-color:" + (cancelada ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)") + ";" +
-                                "-fx-text-fill:" + (cancelada ? "#10b981" : "#ef4444") + ";" +
-                                "-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;" +
-                                "-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+                btnToggle.getStyleClass().add(cancelada ? "btn-reactivate" : "btn-cancel");
+                btnToggle.setAccessibleText(cancelada ? "Reactivar reserva número " + r.getId() : "Cancelar reserva número " + r.getId());
                 btnToggle.setOnAction(e -> {
                     if (cancelada) confirmarYReactivar(r);
                     else confirmarYCancelar(r);
@@ -211,7 +212,7 @@ public class DashboardController {
         });
 
         genericTable.getColumns().addAll(colId, colUser, colPista, colFecha, colHorario, colEstado, colAcciones);
-        configurarPaginacion(reservationService.getAllReservations());
+        configurarPaginacion(reservationService.findAll());
     }
 
     private void abrirEdicionReserva(Reservation reservation) {
@@ -221,7 +222,6 @@ public class DashboardController {
             Scene scene = new Scene(loader.load());
             ReservationFormController ctrl = loader.getController();
             ctrl.setReservacionAEditar(reservation);
-
             Stage stage = new Stage();
             stage.setTitle("Editar Reserva #" + reservation.getId());
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
@@ -241,7 +241,7 @@ public class DashboardController {
         alert.setContentText("La reserva quedará marcada como cancelada.");
         estilizarAlert(alert);
         alert.showAndWait().ifPresent(res -> {
-            if (res == ButtonType.OK) { reservationService.cancelReservation(r.getId()); refrescarReservas(); }
+            if (res == ButtonType.OK) { reservationService.cancel(r.getId()); refrescarReservas(); }
         });
     }
 
@@ -252,7 +252,7 @@ public class DashboardController {
         alert.setContentText("La reserva volverá a estar activa.");
         estilizarAlert(alert);
         alert.showAndWait().ifPresent(res -> {
-            if (res == ButtonType.OK) { reservationService.reactivateReservation(r.getId()); refrescarReservas(); }
+            if (res == ButtonType.OK) { reservationService.reactivate(r.getId()); refrescarReservas(); }
         });
     }
 
@@ -274,40 +274,43 @@ public class DashboardController {
     private void cargarTabDeportes() {
         pagination.setVisible(false);
         tileDeportes.getChildren().clear();
-        List<Sport> deportes = sportService.findAllSports();
+        List<Sport> deportes = sportService.findAll();
         for (Sport sport : deportes) {
             VBox card = new VBox(10);
             card.getStyleClass().add("sport-card");
             card.setPrefSize(200, 130);
-            Label nameLabel = new Label(sport.getName().toUpperCase());
-            nameLabel.getStyleClass().add("table-text-bold");
-            nameLabel.setStyle("-fx-font-size:16px;-fx-text-fill:#2563eb;");
 
-            javafx.scene.layout.HBox btnBox = new javafx.scene.layout.HBox(6);
-            btnBox.setAlignment(javafx.geometry.Pos.CENTER);
+            Label nameLabel = new Label(sport.getName().toUpperCase());
+            nameLabel.getStyleClass().add("sport-card-name");
+            nameLabel.setAccessibleText("Deporte: " + sport.getName());
+
+            HBox btnBox = new HBox(6);
+            btnBox.setAlignment(Pos.CENTER);
+
             org.kordamp.ikonli.javafx.FontIcon icoED = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
             icoED.setIconColor(javafx.scene.paint.Color.web("#2563eb")); icoED.setIconSize(11);
-            javafx.scene.control.Button btnEditar = new javafx.scene.control.Button("Editar", icoED);
-            btnEditar.setStyle("-fx-background-color:rgba(37,99,235,0.2);-fx-text-fill:#2563eb;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+            Button btnEditar = new Button("Editar", icoED);
+            btnEditar.getStyleClass().add("btn-edit");
+            btnEditar.setAccessibleText("Editar deporte " + sport.getName());
+
             org.kordamp.ikonli.javafx.FontIcon icoELD = new org.kordamp.ikonli.javafx.FontIcon("fas-trash-alt");
             icoELD.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoELD.setIconSize(11);
-            javafx.scene.control.Button btnEliminar = new javafx.scene.control.Button("Eliminar", icoELD);
-            btnEliminar.setStyle("-fx-background-color:rgba(239,68,68,0.15);-fx-text-fill:#ef4444;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+            Button btnEliminar = new Button("Eliminar", icoELD);
+            btnEliminar.getStyleClass().add("btn-delete");
+            btnEliminar.setAccessibleText("Eliminar deporte " + sport.getName());
 
             btnEditar.setOnAction(e -> abrirEdicionDeporte(sport));
             btnEliminar.setOnAction(e -> confirmarEliminarDeporte(sport));
             btnBox.getChildren().addAll(btnEditar, btnEliminar);
             card.getChildren().addAll(nameLabel, btnBox);
-            card.setOnMouseEntered(ev -> card.setStyle("-fx-border-color:#2563eb;-fx-cursor:hand;-fx-background-color:rgba(37,99,235,0.05);-fx-background-radius:12;-fx-border-radius:12;-fx-border-width:1;-fx-padding:20;-fx-alignment:CENTER;"));
-            card.setOnMouseExited(ev -> card.setStyle(""));
             tileDeportes.getChildren().add(card);
         }
     }
 
     private void abrirEdicionDeporte(Sport sport) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/example/sportconnect/forms/sport-form-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/sportconnect/forms/sport-form-view.fxml"));
+            Scene scene = new Scene(loader.load());
             SportFormController ctrl = loader.getController();
             ctrl.setSportAEditar(sport);
             Stage stage = new Stage();
@@ -317,18 +320,18 @@ public class DashboardController {
             stage.setScene(scene);
             stage.showAndWait();
             handleTabChange(new javafx.event.ActionEvent(btnTabDeportes, null));
-        } catch (java.io.IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void confirmarEliminarDeporte(Sport sport) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Eliminar deporte");
         alert.setHeaderText("¿Eliminar " + sport.getName() + "?");
         alert.setContentText("Se eliminará el deporte y todas sus pistas asociadas.");
         estilizarAlert(alert);
         alert.showAndWait().ifPresent(r -> {
-            if (r == javafx.scene.control.ButtonType.OK) {
-                sportService.deleteSport(sport.getId());
+            if (r == ButtonType.OK) {
+                sportService.delete(sport.getId());
                 handleTabChange(new javafx.event.ActionEvent(btnTabDeportes, null));
             }
         });
@@ -360,7 +363,7 @@ public class DashboardController {
                 super.updateItem(item, empty);
                 if (empty || !(getTableRow().getItem() instanceof Court c)) { setText(null); return; }
                 setText(c.getSport().getName().toUpperCase());
-                setStyle("-fx-text-fill:#2563eb;-fx-font-weight:bold;-fx-font-size:12px;");
+                getStyleClass().add("court-name-cell");
             }
         });
 
@@ -374,16 +377,21 @@ public class DashboardController {
             @Override protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || !(getTableRow().getItem() instanceof Court c)) { setGraphic(null); return; }
+
                 org.kordamp.ikonli.javafx.FontIcon icoEditP = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
                 icoEditP.setIconColor(javafx.scene.paint.Color.web("#2563eb")); icoEditP.setIconSize(11);
                 Button btnEditar = new Button("Editar", icoEditP);
-                btnEditar.setStyle("-fx-background-color:rgba(37,99,235,0.15);-fx-text-fill:#2563eb;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+                btnEditar.getStyleClass().add("btn-edit");
+                btnEditar.setAccessibleText("Editar pista " + c.getName());
                 btnEditar.setOnAction(e -> abrirEdicionPista(c));
+
                 org.kordamp.ikonli.javafx.FontIcon icoDelP = new org.kordamp.ikonli.javafx.FontIcon("fas-trash-alt");
                 icoDelP.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoDelP.setIconSize(11);
                 Button btnEliminar = new Button("Eliminar", icoDelP);
-                btnEliminar.setStyle("-fx-background-color:rgba(239,68,68,0.15);-fx-text-fill:#ef4444;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+                btnEliminar.getStyleClass().add("btn-delete");
+                btnEliminar.setAccessibleText("Eliminar pista " + c.getName() + ", precio " + String.format("%.0f", c.getPrice()) + " euros");
                 btnEliminar.setOnAction(e -> confirmarEliminarPista(c));
+
                 HBox box = new HBox(6, btnEditar, btnEliminar);
                 box.setAlignment(Pos.CENTER_LEFT);
                 setGraphic(box); setAlignment(Pos.CENTER_LEFT);
@@ -391,13 +399,13 @@ public class DashboardController {
         });
 
         genericTable.getColumns().addAll(colId, colPista, colDeporte, colPrecio, colAccionesPista);
-        configurarPaginacion(courtService.getAllCourts());
+        configurarPaginacion(courtService.findAll());
     }
 
     private void abrirEdicionPista(Court court) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/example/sportconnect/forms/court-form-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/sportconnect/forms/court-form-view.fxml"));
+            Scene scene = new Scene(loader.load());
             CourtFormController ctrl = loader.getController();
             ctrl.setPistaAEditar(court);
             Stage stage = new Stage();
@@ -407,18 +415,18 @@ public class DashboardController {
             stage.setScene(scene);
             stage.showAndWait();
             handleTabChange(new javafx.event.ActionEvent(btnTabPistas, null));
-        } catch (java.io.IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void confirmarEliminarPista(Court court) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Eliminar pista");
         alert.setHeaderText("¿Eliminar " + court.getName() + "?");
         alert.setContentText("Se eliminará la pista y todas sus reservas asociadas.");
         estilizarAlert(alert);
         alert.showAndWait().ifPresent(r -> {
-            if (r == javafx.scene.control.ButtonType.OK) {
-                courtService.deleteCourt(court.getId());
+            if (r == ButtonType.OK) {
+                courtService.delete(court.getId());
                 actualizarEstadisticas();
                 handleTabChange(new javafx.event.ActionEvent(btnTabPistas, null));
             }
@@ -468,9 +476,8 @@ public class DashboardController {
                 super.updateItem(item, empty);
                 if (empty || !(getTableRow().getItem() instanceof User u)) { setGraphic(null); return; }
                 Label lbl = new Label(u.isAdmin() ? "ADMIN" : "CLIENTE");
-                lbl.setStyle(u.isAdmin()
-                        ? "-fx-text-fill:#2563eb;-fx-font-weight:bold;-fx-background-color:rgba(37,99,235,0.1);-fx-padding:3 8;-fx-background-radius:5;"
-                        : "-fx-text-fill:#94a3b8;-fx-padding:3 8;");
+                lbl.getStyleClass().add(u.isAdmin() ? "badge-admin" : "badge-client");
+                lbl.setAccessibleText(u.isAdmin() ? "Rol administrador" : "Rol cliente");
                 setGraphic(lbl);
             }
         });
@@ -481,22 +488,29 @@ public class DashboardController {
             @Override protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || !(getTableRow().getItem() instanceof User u)) { setGraphic(null); return; }
-                org.kordamp.ikonli.javafx.FontIcon icoEditU = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
+
+                FontIcon icoEditU = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
                 icoEditU.setIconColor(javafx.scene.paint.Color.web("#2563eb")); icoEditU.setIconSize(11);
                 Button btnEditar = new Button("Editar", icoEditU);
-                btnEditar.setStyle("-fx-background-color:rgba(37,99,235,0.15);-fx-text-fill:#2563eb;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+                btnEditar.getStyleClass().add("btn-edit");
+                btnEditar.setAccessibleText("Editar usuario " + u.getName() + " " + u.getLastName());
                 btnEditar.setOnAction(e -> abrirEdicionUsuario(u));
-                org.kordamp.ikonli.javafx.FontIcon icoDelU = new org.kordamp.ikonli.javafx.FontIcon("fas-trash-alt");
+
+                FontIcon icoDelU = new org.kordamp.ikonli.javafx.FontIcon("fas-trash-alt");
                 icoDelU.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoDelU.setIconSize(11);
                 Button btnEliminar = new Button("Eliminar", icoDelU);
-                btnEliminar.setStyle("-fx-background-color:rgba(239,68,68,0.15);-fx-text-fill:#ef4444;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
-                // No permitir eliminar al usuario actual
-                User currentUser = org.example.sportconnect.utils.Session.getInstance().getUser();
+                btnEliminar.getStyleClass().add("btn-delete");
+                btnEliminar.setAccessibleText("Eliminar usuario " + u.getName() + " " + u.getLastName());
+
+                // No permitir eliminar al usuario activo en sesión
+                User currentUser = Session.getInstance().getUser();
                 if (currentUser != null && currentUser.getId().equals(u.getId())) {
-                    btnEliminar.setDisable(true); btnEliminar.setOpacity(0.3);
-                    btnEliminar.setStyle(btnEliminar.getStyle() + "-fx-cursor:default;");
+                    btnEliminar.setDisable(true);
+                    btnEliminar.setOpacity(0.3);
+                    btnEliminar.setAccessibleText("No puedes eliminar tu propia cuenta");
                 }
                 btnEliminar.setOnAction(e -> confirmarEliminarUsuario(u));
+
                 HBox box = new HBox(6, btnEditar, btnEliminar);
                 box.setAlignment(Pos.CENTER_LEFT);
                 setGraphic(box); setAlignment(Pos.CENTER_LEFT);
@@ -504,13 +518,13 @@ public class DashboardController {
         });
 
         genericTable.getColumns().addAll(colId, colNombre, colApellidos, colEmail, colPhone, colAdmin, colAccionesUser);
-        configurarPaginacion(userService.getAllUsers());
+        configurarPaginacion(userService.findAll());
     }
 
     private void abrirEdicionUsuario(User user) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/example/sportconnect/forms/user-form-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/sportconnect/forms/user-form-view.fxml"));
+            Scene scene = new Scene(loader.load());
             UserFormController ctrl = loader.getController();
             ctrl.setUsuarioAEditar(user);
             Stage stage = new Stage();
@@ -520,18 +534,18 @@ public class DashboardController {
             stage.setScene(scene);
             stage.showAndWait();
             handleTabChange(new javafx.event.ActionEvent(btnTabUsuarios, null));
-        } catch (java.io.IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void confirmarEliminarUsuario(User user) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Eliminar usuario");
         alert.setHeaderText("¿Eliminar a " + user.getName() + " " + user.getLastName() + "?");
         alert.setContentText("Esta acción no se puede deshacer.");
         estilizarAlert(alert);
         alert.showAndWait().ifPresent(r -> {
-            if (r == javafx.scene.control.ButtonType.OK) {
-                userService.deleteUser(user.getId());
+            if (r == ButtonType.OK) {
+                userService.delete(user.getId());
                 actualizarEstadisticas();
                 handleTabChange(new javafx.event.ActionEvent(btnTabUsuarios, null));
             }
@@ -543,7 +557,7 @@ public class DashboardController {
     @FXML
     private void handleAdd() {
         switch (btnAddAction.getText()) {
-            case "Nueva Reserva" -> abrirModal("/org/example/sportconnect/reservation-form-view/reservation-form-view.fxml", "Nueva Reserva");
+            case "Nueva Reserva" -> abrirModal("/org/example/sportconnect/reservation-form/reservation-form-view.fxml", "Nueva Reserva");
             case "Nuevo Deporte" -> abrirModal("/org/example/sportconnect/forms/sport-form-view.fxml", "Nuevo Deporte");
             case "Nueva Pista"   -> abrirModal("/org/example/sportconnect/forms/court-form-view.fxml", "Nueva Pista");
             case "Nuevo Usuario" -> abrirModal("/org/example/sportconnect/forms/user-form-view.fxml", "Nuevo Usuario");

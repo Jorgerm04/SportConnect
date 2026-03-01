@@ -6,11 +6,14 @@ import org.hibernate.Transaction;
 import java.util.Collections;
 import java.util.List;
 
+/** DAO base con operaciones CRUD comunes para todas las entidades */
 public class GenericDAO<T> {
+
     private final Class<T> type;
 
     public GenericDAO(Class<T> type) { this.type = type; }
 
+    /** Inserta una entidad nueva */
     public boolean save(T entity) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -25,6 +28,7 @@ public class GenericDAO<T> {
         }
     }
 
+    /** Actualiza una entidad existente */
     public boolean update(T entity) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -39,6 +43,7 @@ public class GenericDAO<T> {
         }
     }
 
+    /** Elimina una entidad por id */
     public boolean delete(Long id) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -54,6 +59,7 @@ public class GenericDAO<T> {
         }
     }
 
+    /** Busca por id, devuelve null si no existe */
     public T findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(type, id);
@@ -63,6 +69,7 @@ public class GenericDAO<T> {
         }
     }
 
+    /** Devuelve todos los registros de la tabla */
     public List<T> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM " + type.getSimpleName(), type).list();

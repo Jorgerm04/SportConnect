@@ -1,4 +1,3 @@
-/* --- ESTILOS EXCLUSIVOS DEL LOGIN --- */
 .login-card {
     -fx-background-color: #0f172a;
     -fx-background-radius: 25;
@@ -10,6 +9,14 @@
     -fx-effect: dropshadow(three-pass-box, rgba(37, 99, 235, 0.4), 40, 0, 0, 0);
 }
 
+.login-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 26px;
+    -fx-text-fill: white;
+}
+
+.logo-text { -fx-font-weight: 900; }
+
 .custom-input {
     -fx-background-color: #020617;
     -fx-border-color: #334155;
@@ -19,11 +26,7 @@
     -fx-padding: 12;
     -fx-font-size: 14;
 }
-
-.custom-input:focused {
-    -fx-border-color: #2563eb;
-    -fx-background-color: #020617;
-}
+.custom-input:focused { -fx-border-color: #2563eb; -fx-background-color: #020617; }
 
 .login-button {
     -fx-background-color: #2563eb;
@@ -34,8 +37,5 @@
     -fx-font-size: 15;
     -fx-cursor: hand;
 }
-
-.login-button:hover {
-    -fx-background-color: #1d4ed8;
-    -fx-effect: dropshadow(three-pass-box, rgba(37, 99, 235, 0.3), 10, 0, 0, 0);
-}
+.login-button:hover   { -fx-background-color: #1d4ed8; -fx-effect: dropshadow(three-pass-box, rgba(37, 99, 235, 0.3), 10, 0, 0, 0); }
+.login-button:pressed { -fx-background-color: #1e40af; }

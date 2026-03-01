@@ -5,17 +5,21 @@ import org.example.sportconnect.models.Sport;
 import java.util.List;
 
 public class SportService {
+
     private final SportDAO sportDAO = new SportDAO();
 
-    public List<Sport> findAllSports() { return sportDAO.getAllSports(); }
-    public List<String> getAllSportNames() { return sportDAO.getAllSports().stream().map(Sport::getName).toList(); }
+    /** Devuelve todos los deportes */
+    public List<Sport> findAll() { return sportDAO.findAll(); }
 
-    public boolean saveSport(String name) {
+    /** Crea un deporte nuevo. Devuelve false si el nombre está vacío */
+    public boolean save(String name) {
         if (name == null || name.isBlank()) return false;
         return sportDAO.save(new Sport(name));
     }
 
-    public boolean updateSport(Sport sport) { return sportDAO.update(sport); }
+    /** Actualiza el nombre de un deporte */
+    public boolean update(Sport sport) { return sportDAO.update(sport); }
 
-    public boolean deleteSport(Long id) { return sportDAO.delete(id); }
+    /** Elimina un deporte por id */
+    public boolean delete(Long id) { return sportDAO.delete(id); }
 }

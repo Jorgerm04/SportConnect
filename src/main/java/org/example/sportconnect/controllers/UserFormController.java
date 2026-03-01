@@ -2,9 +2,7 @@ package org.example.sportconnect.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import org.example.sportconnect.components.ToggleSwitch;
 import org.example.sportconnect.models.User;
 import org.example.sportconnect.services.UserService;
 
@@ -19,19 +17,10 @@ public class UserFormController {
     @FXML private Label lblError;
     @FXML private Button btnGuardar;
     @FXML private Label lblTitulo;
-    @FXML private HBox toggleContainer;  // contenedor del switch en el FXML
+    @FXML private CheckBox chkAdmin;
 
-    private final ToggleSwitch toggleAdmin = new ToggleSwitch();
     private final UserService userService = new UserService();
     private User usuarioAEditar = null;
-
-    @FXML
-    public void initialize() {
-        // Inyectamos el toggle en el contenedor definido en el FXML
-        if (toggleContainer != null) {
-            toggleContainer.getChildren().add(toggleAdmin);
-        }
-    }
 
     public void setUsuarioAEditar(User user) {
         this.usuarioAEditar = user;
@@ -39,7 +28,7 @@ public class UserFormController {
         txtApellidos.setText(user.getLastName());
         txtEmail.setText(user.getEmail());
         txtTelefono.setText(user.getPhone() != null ? user.getPhone() : "");
-        toggleAdmin.setSelected(user.isAdmin());
+        chkAdmin.setSelected(user.isAdmin());
         txtEmail.setDisable(true);
         if (lblPasswordHint != null) lblPasswordHint.setVisible(true);
         if (lblTitulo != null) lblTitulo.setText("Editar Usuario");
@@ -62,8 +51,8 @@ public class UserFormController {
             usuarioAEditar.setName(nombre);
             usuarioAEditar.setLastName(apellidos);
             usuarioAEditar.setPhone(telefono.isEmpty() ? null : telefono);
-            usuarioAEditar.setAdmin(toggleAdmin.isSelected());
-            boolean ok = userService.updateUser(usuarioAEditar, password.isEmpty() ? null : password);
+            usuarioAEditar.setAdmin(chkAdmin.isSelected());
+            boolean ok = userService.update(usuarioAEditar, password.isEmpty() ? null : password);
             if (ok) cerrar(); else mostrarError("Error al actualizar el usuario.");
         } else {
             if (email.isEmpty() || password.isEmpty()) {
@@ -71,8 +60,8 @@ public class UserFormController {
             }
             if (!email.contains("@")) { mostrarError("Email no válido."); return; }
             if (password.length() < 4) { mostrarError("Contraseña mínimo 4 caracteres."); return; }
-            boolean ok = userService.saveUser(nombre, apellidos, email,
-                    telefono.isEmpty() ? null : telefono, password, toggleAdmin.isSelected());
+            boolean ok = userService.save(nombre, apellidos, email,
+                    telefono.isEmpty() ? null : telefono, password, chkAdmin.isSelected());
             if (ok) cerrar(); else mostrarError("Ya existe un usuario con ese email.");
         }
     }

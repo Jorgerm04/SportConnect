@@ -17,6 +17,15 @@
     -fx-max-height: Infinity;
 }
 
+.stat-label-title {
+    -fx-font-size: 12px;
+}
+
+.stat-label-value {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
 .icon-container-blue {
     -fx-background-color: #132651;
     -fx-background-radius: 10;
@@ -52,10 +61,9 @@
     -fx-font-size: 13px;
     -fx-graphic-text-gap: 6;
 }
-
-.add-button:hover {
-    -fx-background-color: #1d4ed8;
-}
+.add-button:hover   { -fx-background-color: #1d4ed8; }
+.add-button:pressed { -fx-background-color: #1e40af; }
+.add-button:focused { -fx-background-color: #1d4ed8; }
 
 .tab-button {
     -fx-background-color: transparent;
@@ -66,11 +74,9 @@
     -fx-cursor: hand;
     -fx-font-size: 13px;
 }
-
-.tab-button.active {
-    -fx-background-color: #2563eb;
-    -fx-text-fill: white;
-}
+.tab-button.active  { -fx-background-color: #2563eb; -fx-text-fill: white; }
+.tab-button:hover   { -fx-background-color: rgba(37, 99, 235, 0.1); -fx-text-fill: white; }
+.tab-button:focused { -fx-background-color: rgba(37, 99, 235, 0.1); -fx-text-fill: white; }
 
 /* --- TABLA --- */
 .custom-table {
@@ -118,14 +124,144 @@
     -fx-border-color: transparent;
 }
 
-.custom-table .scroll-bar:vertical {
-    -fx-pref-width: 0;
-    -fx-opacity: 0;
+.custom-table .scroll-bar:vertical  { -fx-pref-width: 0; -fx-opacity: 0; }
+.custom-table .scroll-bar:horizontal { -fx-pref-height: 0; -fx-opacity: 0; }
+
+.table-text-bold {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
 }
-.custom-table .scroll-bar:horizontal {
-    -fx-pref-height: 0;
-    -fx-opacity: 0;
+
+.table-text-sub {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
 }
+
+/* --- BOTONES DE ACCIÓN EN TABLA --- */
+.btn-edit {
+    -fx-background-color: rgba(37, 99, 235, 0.15);
+    -fx-text-fill: #2563eb;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 5;
+    -fx-content-display: LEFT;
+}
+.btn-edit:hover   { -fx-background-color: rgba(37, 99, 235, 0.28); }
+.btn-edit:pressed { -fx-background-color: rgba(37, 99, 235, 0.45); }
+.btn-edit:focused { -fx-background-color: rgba(37, 99, 235, 0.28); }
+
+.btn-delete {
+    -fx-background-color: rgba(239, 68, 68, 0.15);
+    -fx-text-fill: #ef4444;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 5;
+    -fx-content-display: LEFT;
+}
+.btn-delete:hover   { -fx-background-color: rgba(239, 68, 68, 0.28); }
+.btn-delete:pressed { -fx-background-color: rgba(239, 68, 68, 0.45); }
+.btn-delete:focused { -fx-background-color: rgba(239, 68, 68, 0.28); }
+
+.btn-cancel {
+    -fx-background-color: rgba(239, 68, 68, 0.15);
+    -fx-text-fill: #ef4444;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 5;
+    -fx-content-display: LEFT;
+}
+.btn-cancel:hover   { -fx-background-color: rgba(239, 68, 68, 0.28); }
+.btn-cancel:pressed { -fx-background-color: rgba(239, 68, 68, 0.45); }
+.btn-cancel:focused { -fx-background-color: rgba(239, 68, 68, 0.28); }
+
+.btn-reactivate {
+    -fx-background-color: rgba(16, 185, 129, 0.15);
+    -fx-text-fill: #10b981;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 5;
+    -fx-content-display: LEFT;
+}
+.btn-reactivate:hover   { -fx-background-color: rgba(16, 185, 129, 0.28); }
+.btn-reactivate:pressed { -fx-background-color: rgba(16, 185, 129, 0.45); }
+.btn-reactivate:focused { -fx-background-color: rgba(16, 185, 129, 0.28); }
+
+/* --- BADGES DE ESTADO --- */
+.badge-active {
+    -fx-text-fill: #10b981;
+    -fx-background-color: rgba(16, 185, 129, 0.1);
+    -fx-padding: 3 8;
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.badge-cancelled {
+    -fx-text-fill: #ef4444;
+    -fx-background-color: rgba(239, 68, 68, 0.1);
+    -fx-padding: 3 8;
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.badge-admin {
+    -fx-text-fill: #2563eb;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(37, 99, 235, 0.1);
+    -fx-padding: 3 8;
+    -fx-background-radius: 5;
+    -fx-font-size: 12px;
+}
+
+.badge-client {
+    -fx-text-fill: #94a3b8;
+    -fx-padding: 3 8;
+    -fx-font-size: 12px;
+}
+
+/* --- NOMBRE DEPORTE EN CARD --- */
+.sport-card-name {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2563eb;
+    -fx-font-weight: bold;
+}
+
+/* --- NOMBRE DEPORTE EN COLUMNA PISTAS --- */
+.court-name-cell {
+    -fx-text-fill: #2563eb;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+/* --- LABEL NOMBRE USUARIO TOP-BAR --- */
+.lbl-username {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* --- LABEL VACÍO (sin datos) --- */
+.lbl-empty {
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+}
+
+/* --- LOGO --- */
+.logo-text { -fx-font-weight: 900; }
 
 /* --- VISTA DEPORTES --- */
 .scroll-deportes {
@@ -148,7 +284,6 @@
     -fx-alignment: CENTER;
     -fx-cursor: hand;
 }
-
 .sport-card:hover {
     -fx-background-color: rgba(37, 99, 235, 0.1);
     -fx-border-color: #2563eb;
@@ -190,20 +325,11 @@
     -fx-background-radius: 20;
 }
 
-/* --- OTROS --- */
+/* --- LOGOUT --- */
 .logout-btn {
     -fx-background-color: transparent;
     -fx-padding: 8;
     -fx-cursor: hand;
 }
-
-.table-text-bold {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-}
-
-.table-text-sub {
-    -fx-text-fill: #64748b;
-    -fx-font-size: 11px;
-}
+.logout-btn:hover   { -fx-opacity: 0.7; }
+.logout-btn:pressed { -fx-opacity: 0.5; }

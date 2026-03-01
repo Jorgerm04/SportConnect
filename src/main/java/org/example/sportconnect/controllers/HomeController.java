@@ -46,7 +46,7 @@ public class HomeController {
         if (currentUser == null) return;
         lblUserName.setText(currentUser.getName());
 
-        List<Reservation> todas = reservationService.getAllReservations();
+        List<Reservation> todas = reservationService.findAll();
         LocalDate hoy = LocalDate.now();
 
         for (Reservation res : todas) {
@@ -60,15 +60,14 @@ public class HomeController {
             }
         }
 
-        // Mensajes vacíos
         if (containerProximas.getChildren().isEmpty()) {
             Label lbl = new Label("No tienes reservas próximas");
-            lbl.setStyle("-fx-text-fill: #475569; -fx-font-size: 13px;");
+            lbl.getStyleClass().add("lbl-empty");
             containerProximas.getChildren().add(lbl);
         }
         if (containerHistorial.getChildren().isEmpty()) {
             Label lbl = new Label("No hay reservas en el historial");
-            lbl.setStyle("-fx-text-fill: #475569; -fx-font-size: 13px;");
+            lbl.getStyleClass().add("lbl-empty");
             containerHistorial.getChildren().add(lbl);
         }
     }
@@ -101,14 +100,16 @@ public class HomeController {
         infoBox.setAlignment(Pos.CENTER_LEFT);
         FontIcon iconCal = new FontIcon("far-calendar-alt");
         iconCal.setIconColor(Color.web("#64748b"));
+        iconCal.setAccessibleText("Fecha");
         Label lblData = new Label(res.getDate().format(formatter) + "  ·  " + res.getStartHour() + " - " + res.getEndHour());
         lblData.getStyleClass().add("info-text");
         infoBox.getChildren().addAll(iconCal, lblData);
 
-        // Estado si está cancelada
+        // Badge cancelada
         if (res.isCancelled()) {
             Label lblCancelada = new Label("Cancelada");
-            lblCancelada.setStyle("-fx-text-fill:#ef4444;-fx-background-color:rgba(239,68,68,0.1);-fx-padding:3 8;-fx-background-radius:5;-fx-font-size:11px;-fx-font-weight:bold;");
+            lblCancelada.getStyleClass().add("badge-cancelled-card");
+            lblCancelada.setAccessibleText("Reserva cancelada");
             infoBox.getChildren().add(lblCancelada);
         }
 
@@ -118,10 +119,12 @@ public class HomeController {
 
         // Botón cancelar — solo en reservas activas futuras
         if (!esHistorial && !res.isCancelled()) {
-            org.kordamp.ikonli.javafx.FontIcon icoCancel = new org.kordamp.ikonli.javafx.FontIcon("fas-times");
-            icoCancel.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoCancel.setIconSize(11);
+            FontIcon icoCancel = new FontIcon("fas-times");
+            icoCancel.setIconColor(Color.web("#ef4444")); icoCancel.setIconSize(11);
             Button btnCancel = new Button("Cancelar", icoCancel);
-            btnCancel.setStyle("-fx-background-color:rgba(239,68,68,0.15);-fx-text-fill:#ef4444;-fx-font-size:11px;-fx-font-weight:bold;-fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;-fx-graphic-text-gap:5;-fx-content-display:LEFT;");
+            btnCancel.getStyleClass().add("btn-cancel");
+            btnCancel.setAccessibleText("Cancelar reserva en " + res.getCourt().getName() +
+                    ", " + res.getDate().format(formatter));
             btnCancel.setOnAction(e -> confirmarCancelacion(res));
             content.getChildren().add(btnCancel);
         }
@@ -139,15 +142,14 @@ public class HomeController {
                 res.getDate().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("es", "ES"))) +
                 "  ·  " + res.getStartHour() + " - " + res.getEndHour());
 
-        // Estilo oscuro
         DialogPane dp = alert.getDialogPane();
         var css = getClass().getResource("/org/example/sportconnect/base.css");
         if (css != null) { dp.getStylesheets().add(css.toExternalForm()); dp.getStyleClass().add("custom-alert"); }
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                reservationService.cancelReservation(res.getId());
-                cargarDatos(); // Refrescar la lista
+                reservationService.cancel(res.getId());
+                cargarDatos();
             }
         });
     }

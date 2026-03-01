@@ -35,7 +35,6 @@ public class ReservationFormController {
     private Court pistaSeleccionada;
     private LocalDate fechaSeleccionada = LocalDate.now();
 
-    // Para el modo edición
     private Reservation reservacionAEditar = null;
     private boolean modoEdicion = false;
 
@@ -51,19 +50,14 @@ public class ReservationFormController {
         configurarSelectorAdmin();
     }
 
-    /** Llamado desde DashboardController para precargar datos de la reserva a editar */
+    /** Precarga los datos de la reserva a editar */
     public void setReservacionAEditar(Reservation reservacion) {
         this.reservacionAEditar = reservacion;
         this.modoEdicion = true;
-
-        // Precargar fecha y pista
         fechaSeleccionada = reservacion.getDate();
         pistaSeleccionada = reservacion.getCourt();
-
-        // Cambiar título del botón confirmar
         btnConfirmar.setText("Guardar Cambios");
 
-        // Si es admin, preseleccionar el cliente
         if (hboxAdminSelector.isVisible()) {
             comboUsuarios.getItems().stream()
                     .filter(u -> u.getId().equals(reservacion.getUser().getId()))
@@ -73,7 +67,6 @@ public class ReservationFormController {
 
         actualizarInterfazFecha();
 
-        // Preseleccionar el deporte correcto en los botones
         javafx.application.Platform.runLater(() -> {
             hboxDeportes.getChildren().forEach(node -> {
                 if (node instanceof Button btn) {
@@ -92,7 +85,7 @@ public class ReservationFormController {
         hboxAdminSelector.setManaged(isAdmin);
 
         if (isAdmin) {
-            comboUsuarios.setItems(FXCollections.observableArrayList(userService.getAllUsers()));
+            comboUsuarios.setItems(FXCollections.observableArrayList(userService.findAll()));
             comboUsuarios.setPromptText("Seleccionar cliente...");
             comboUsuarios.setCellFactory(lv -> new ListCell<>() {
                 @Override protected void updateItem(User item, boolean empty) {
@@ -101,22 +94,24 @@ public class ReservationFormController {
                 }
             });
             comboUsuarios.setButtonCell(comboUsuarios.getCellFactory().call(null));
+            comboUsuarios.setAccessibleText("Seleccionar el cliente para la reserva");
         }
     }
 
     private void actualizarInterfazFecha() {
         lblFechaActual.setText(fechaSeleccionada.format(formatterLargo));
-        lblResumenFecha.setText("📅 " + fechaSeleccionada.format(formatterCorto));
+        lblResumenFecha.setText(fechaSeleccionada.format(formatterCorto));
         if (deporteActual != null) cargarPistasPorDeporte((int) (long) deporteActual.getId());
     }
 
     private void cargarDeportesDesdeDB() {
         hboxDeportes.getChildren().clear();
-        List<Sport> deportes = sportService.findAllSports();
+        List<Sport> deportes = sportService.findAll();
 
         for (Sport sport : deportes) {
             Button btn = new Button(sport.getName());
             btn.getStyleClass().add("tab-button");
+            btn.setAccessibleText("Deporte " + sport.getName());
 
             if (hboxDeportes.getChildren().isEmpty()) {
                 seleccionarDeporte(btn, sport);
@@ -131,13 +126,13 @@ public class ReservationFormController {
         hboxDeportes.getChildren().forEach(n -> n.getStyleClass().remove("active"));
         btn.getStyleClass().add("active");
         deporteActual = sport;
-        lblResumenSport.setText("🏆 " + sport.getName());
+        lblResumenSport.setText(sport.getName());
         cargarPistasPorDeporte((int) (long) sport.getId());
     }
 
     private void cargarPistasPorDeporte(int sportId) {
         vboxPistasContenedor.getChildren().clear();
-        courtService.getAllCourts().stream()
+        courtService.findAll().stream()
                 .filter(c -> c.getSport().getId() == sportId)
                 .forEach(this::generarFilaPista);
     }
@@ -148,16 +143,19 @@ public class ReservationFormController {
 
         VBox infoPista = new VBox(2);
         infoPista.setMinWidth(120);
+
         Label lblNombre = new Label(pista.getName());
-        lblNombre.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
+        lblNombre.getStyleClass().add("court-row-name");
+
         Label lblPrecio = new Label(String.format("%.2f€/h", pista.getPrice()));
-        lblPrecio.setStyle("-fx-font-size: 11; -fx-text-fill: #94a3b8;");
+        lblPrecio.getStyleClass().add("court-row-price");
+
         infoPista.getChildren().addAll(lblNombre, lblPrecio);
 
         FlowPane flowHoras = new FlowPane(10, 10);
         HBox.setHgrow(flowHoras, Priority.ALWAYS);
+        flowHoras.setAccessibleText("Horas disponibles para " + pista.getName());
 
-        // En modo edición, excluir la propia reserva de las "ocupadas"
         List<Reservation> ocupadas = modoEdicion
                 ? reservationService.findByCourtAndDateExcluding(pista, fechaSeleccionada, reservacionAEditar.getId())
                 : reservationService.findByCourtAndDate(pista, fechaSeleccionada);
@@ -166,15 +164,14 @@ public class ReservationFormController {
         while (!hora.isAfter(LocalTime.of(22, 30))) {
             Button btnHora = crearBotonHora(hora, pista, ocupadas);
 
-            // En modo edición, preseleccionar la hora actual de la reserva
             if (modoEdicion && reservacionAEditar.getCourt().getId().equals(pista.getId())
                     && reservacionAEditar.getStartHour().equals(hora)
                     && reservacionAEditar.getDate().equals(fechaSeleccionada)) {
                 btnHora.getStyleClass().add("hour-selected");
                 lastSelectedHour = btnHora;
                 pistaSeleccionada = pista;
-                lblResumenPista.setText("📍 " + pista.getName());
-                lblResumenHora.setText("🕒 " + hora.format(timeFormatter) + " - " + hora.plusMinutes(90).format(timeFormatter));
+                lblResumenPista.setText(pista.getName());
+                lblResumenHora.setText(hora.format(timeFormatter) + " - " + hora.plusMinutes(90).format(timeFormatter));
                 lblResumenPrecio.setText(String.format("%.2f€", pista.getPrice()));
             }
 
@@ -195,15 +192,18 @@ public class ReservationFormController {
         if (estaOcupado || yaPaso) {
             btn.getStyleClass().add("hour-occupied");
             btn.setDisable(true);
+            btn.setAccessibleText(hora.format(timeFormatter) + " en " + pista.getName() + ": ocupada");
         } else {
             btn.getStyleClass().add("hour-btn");
+            btn.setAccessibleText(hora.format(timeFormatter) + " en " + pista.getName() +
+                    ", precio " + String.format("%.0f", pista.getPrice()) + " euros: disponible");
             btn.setOnAction(e -> {
                 if (lastSelectedHour != null) lastSelectedHour.getStyleClass().remove("hour-selected");
                 btn.getStyleClass().add("hour-selected");
                 lastSelectedHour = btn;
                 pistaSeleccionada = pista;
-                lblResumenPista.setText("📍 " + pista.getName());
-                lblResumenHora.setText("🕒 " + btn.getText() + " - " + hora.plusMinutes(90).format(timeFormatter));
+                lblResumenPista.setText(pista.getName());
+                lblResumenHora.setText(btn.getText() + " - " + hora.plusMinutes(90).format(timeFormatter));
                 lblResumenPrecio.setText(String.format("%.2f€", pista.getPrice()));
             });
         }
@@ -250,7 +250,7 @@ public class ReservationFormController {
             res.setEndHour(res.getStartHour().plusMinutes(90));
             res.setCancelled(false);
 
-            if (reservationService.makeReservation(res)) {
+            if (reservationService.save(res)) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "¡Reserva realizada!");
                 cerrarVentana();
             } else {
@@ -270,7 +270,7 @@ public class ReservationFormController {
             reservacionAEditar.setStartHour(LocalTime.parse(lastSelectedHour.getText(), timeFormatter));
             reservacionAEditar.setEndHour(reservacionAEditar.getStartHour().plusMinutes(90));
 
-            if (reservationService.updateReservation(reservacionAEditar)) {
+            if (reservationService.update(reservacionAEditar)) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "¡Reserva actualizada!");
                 cerrarVentana();
             } else {

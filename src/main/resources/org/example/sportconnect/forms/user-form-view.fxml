@@ -45,14 +45,7 @@
                 </VBox>
             </HBox>
 
-            <!-- Toggle Admin -->
-            <HBox alignment="CENTER_LEFT" spacing="12">
-                <HBox fx:id="toggleContainer" alignment="CENTER_LEFT"/>
-                <VBox spacing="2">
-                    <Label text="Administrador" style="-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:13px;"/>
-                    <Label text="Acceso completo al panel de administración" styleClass="form-label"/>
-                </VBox>
-            </HBox>
+            <CheckBox fx:id="chkAdmin" text="Administrador" styleClass="check-box"/>
 
             <Label fx:id="lblError" styleClass="lbl-error" visible="false" wrapText="true"/>
 

@@ -24,46 +24,33 @@ public class Reservation {
     private boolean cancelled = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "court_id")
-    private Court court; // Asumiendo que crearás la clase Court
+    @JoinColumn(name = "court_id", nullable = false)
+    private Court court;
 
-    // Constructor vacío obligatorio para Hibernate
-    public Reservation() {
-    }
+    public Reservation() {}
 
-    public Reservation(LocalDate date, LocalTime startHour, LocalTime endHour, User user, Court court) {
-        this.date = date;
-        this.startHour = startHour;
-        this.endHour = endHour;
-        this.user = user;
-        this.court = court;
-        this.cancelled = false;
-    }
+    public Long getId()             { return id; }
+    public void setId(Long id)      { this.id = id; }
 
-    // --- GETTERS Y SETTERS ---
+    public LocalDate getDate()              { return date; }
+    public void setDate(LocalDate date)     { this.date = date; }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public LocalTime getStartHour()                 { return startHour; }
+    public void setStartHour(LocalTime startHour)   { this.startHour = startHour; }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public LocalTime getEndHour()               { return endHour; }
+    public void setEndHour(LocalTime endHour)   { this.endHour = endHour; }
 
-    public LocalTime getStartHour() { return startHour; }
-    public void setStartHour(LocalTime startHour) { this.startHour = startHour; }
-
-    public LocalTime getEndHour() { return endHour; }
-    public void setEndHour(LocalTime endHour) { this.endHour = endHour; }
-
-    public boolean isCancelled() { return cancelled; }
+    public boolean isCancelled()                { return cancelled; }
     public void setCancelled(boolean cancelled) { this.cancelled = cancelled; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUser()           { return user; }
+    public void setUser(User user)  { this.user = user; }
 
-    public Court getCourt() { return court; }
-    public void setCourt(Court court) { this.court = court; }
+    public Court getCourt()             { return court; }
+    public void setCourt(Court court)   { this.court = court; }
 }

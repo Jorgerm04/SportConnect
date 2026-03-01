@@ -70,10 +70,22 @@
                                 <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Resumen de tu reserva" textFill="WHITE" />
                                 <HBox spacing="15.0">
                                     <children>
-                                        <Label fx:id="lblResumenSport" text="🏆 --" textFill="#94a3b8" />
-                                        <Label fx:id="lblResumenPista" text="📍 Selecciona pista" textFill="#94a3b8" />
-                                        <Label fx:id="lblResumenFecha" text="📅 --" textFill="#94a3b8" />
-                                        <Label fx:id="lblResumenHora" text="🕒 --:--" textFill="#94a3b8" />
+                                        <HBox alignment="CENTER_LEFT" spacing="5">
+                                            <FontIcon iconLiteral="fas-trophy" iconColor="#94a3b8" iconSize="13"/>
+                                            <Label fx:id="lblResumenSport" text="--" textFill="#94a3b8" />
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" spacing="5">
+                                            <FontIcon iconLiteral="fas-th-large" iconColor="#94a3b8" iconSize="13"/>
+                                            <Label fx:id="lblResumenPista" text="Selecciona pista" textFill="#94a3b8" />
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" spacing="5">
+                                            <FontIcon iconLiteral="fas-calendar-alt" iconColor="#94a3b8" iconSize="13"/>
+                                            <Label fx:id="lblResumenFecha" text="--" textFill="#94a3b8" />
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" spacing="5">
+                                            <FontIcon iconLiteral="fas-clock" iconColor="#94a3b8" iconSize="13"/>
+                                            <Label fx:id="lblResumenHora" text="--:--" textFill="#94a3b8" />
+                                        </HBox>
                                         <Label fx:id="lblResumenPrecio" style="-fx-font-weight: bold;" text="0€" textFill="#2563eb" />
                                     </children>
                                 </HBox>

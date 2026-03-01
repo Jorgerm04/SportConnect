@@ -42,7 +42,7 @@
             </children>
         </HBox>
 
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+        <ScrollPane fitToWidth="true" styleClass="scroll-transparent" VBox.vgrow="ALWAYS">
             <content>
                 <VBox spacing="35.0">
                     <padding>

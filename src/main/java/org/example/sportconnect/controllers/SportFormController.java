@@ -31,9 +31,9 @@ public class SportFormController {
         boolean ok;
         if (deporteAEditar != null) {
             deporteAEditar.setName(nombre);
-            ok = sportService.updateSport(deporteAEditar);
+            ok = sportService.update(deporteAEditar);
         } else {
-            ok = sportService.saveSport(nombre);
+            ok = sportService.save(nombre);
         }
 
         if (ok) cerrar();
