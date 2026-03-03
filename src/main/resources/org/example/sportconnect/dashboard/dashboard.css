@@ -325,6 +325,32 @@
     -fx-background-radius: 20;
 }
 
+/* --- BOTONES NAVEGACIÓN PAGINADOR --- */
+/* Ocultar flechas SVG nativas de los botones prev/next */
+.custom-pagination .left-arrow-button .left-arrow,
+.custom-pagination .right-arrow-button .right-arrow {
+    -fx-background-color: transparent;
+    -fx-shape: none;
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+/* Estilo unificado para todos los botones de navegación */
+.page-nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94a3b8;
+    -fx-cursor: hand;
+    -fx-padding: 5 10;
+    -fx-font-size: 13px;
+    -fx-background-radius: 20;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+}
+.page-nav-btn:hover   { -fx-background-color: rgba(255,255,255,0.06); }
+.page-nav-btn:pressed { -fx-background-color: rgba(255,255,255,0.12); }
+
 /* --- LOGOUT --- */
 .logout-btn {
     -fx-background-color: transparent;

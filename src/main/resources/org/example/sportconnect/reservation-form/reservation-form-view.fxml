@@ -25,7 +25,7 @@
                             <children>
                                 <HBox spacing="10" alignment="CENTER_LEFT">
                                     <FontIcon iconLiteral="fas-user-shield" iconColor="#2563eb" iconSize="18" />
-                                    <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Cliente" textFill="#2563eb" />
+                                    <Label styleClass="label-client-title" text="Cliente" />
                                 </HBox>
                                 <ComboBox fx:id="comboUsuarios" maxWidth="Infinity" prefHeight="40.0" promptText="Buscar usuario..." styleClass="combo-box-admin" />
                             </children>
@@ -33,7 +33,7 @@
 
                         <VBox spacing="10.0" styleClass="stat-card" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="400.0">
                             <children>
-                                <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Selecciona Deporte" textFill="WHITE" />
+                                <Label styleClass="label-section-title" text="Selecciona Deporte" />
                                 <HBox fx:id="hboxDeportes" spacing="10.0" maxWidth="Infinity" />
                             </children>
                         </VBox>
@@ -44,13 +44,13 @@
                     <children>
                         <HBox alignment="CENTER_LEFT">
                             <children>
-                                <Label fx:id="lblFechaActual" style="-fx-font-weight: bold; -fx-font-size: 15;" text="..." textFill="WHITE" />
+                                <Label fx:id="lblFechaActual" styleClass="label-fecha" text="..." />
                                 <Region HBox.hgrow="ALWAYS" />
                                 <HBox spacing="5.0">
-                                    <Button onAction="#diaAnterior" styleClass="logout-btn" style="-fx-background-color: #1e293b; -fx-background-radius: 5;">
+                                    <Button onAction="#diaAnterior" styleClass="nav-btn-dark">
                                         <graphic><FontIcon iconLiteral="fas-chevron-left" iconColor="WHITE" /></graphic>
                                     </Button>
-                                    <Button onAction="#diaSiguiente" styleClass="logout-btn" style="-fx-background-color: #ffffff; -fx-background-radius: 5;">
+                                    <Button onAction="#diaSiguiente" styleClass="nav-btn-white">
                                         <graphic><FontIcon iconLiteral="fas-chevron-right" iconColor="#0f172a" /></graphic>
                                     </Button>
                                 </HBox>
@@ -67,7 +67,7 @@
                     <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                             <children>
-                                <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Resumen de tu reserva" textFill="WHITE" />
+                                <Label styleClass="label-section-title" text="Resumen de tu reserva" />
                                 <HBox spacing="15.0">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" spacing="5">
@@ -86,7 +86,7 @@
                                             <FontIcon iconLiteral="fas-clock" iconColor="#94a3b8" iconSize="13"/>
                                             <Label fx:id="lblResumenHora" text="--:--" textFill="#94a3b8" />
                                         </HBox>
-                                        <Label fx:id="lblResumenPrecio" style="-fx-font-weight: bold;" text="0€" textFill="#2563eb" />
+                                        <Label fx:id="lblResumenPrecio" styleClass="label-precio-resumen" text="0€" />
                                     </children>
                                 </HBox>
                             </children>

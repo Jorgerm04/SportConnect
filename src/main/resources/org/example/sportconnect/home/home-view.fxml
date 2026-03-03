@@ -31,7 +31,7 @@
 
                 <HBox alignment="CENTER" spacing="15">
                     <children>
-                        <Label fx:id="lblUserName" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" text="Usuario" />
+                        <Label fx:id="lblUserName" styleClass="lbl-username" text="Usuario" />
                         <Button onAction="#handleLogout" styleClass="logout-btn">
                             <graphic>
                                 <FontIcon iconColor="#9F9F9F" iconLiteral="fas-sign-out-alt" iconSize="22" />

@@ -26,7 +26,7 @@
                             </children>
                         </VBox>
 
-                        <Label text="Iniciar Sesión" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 26;" />
+                        <Label text="Iniciar Sesión" textFill="WHITE" styleClass="login-title" />
 
                         <VBox spacing="20.0" prefWidth="320.0">
                             <TextField fx:id="emailField" promptText="Email" styleClass="custom-input" />

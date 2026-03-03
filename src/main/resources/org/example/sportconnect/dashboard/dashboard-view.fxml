@@ -31,7 +31,7 @@
                 <Region HBox.hgrow="ALWAYS" />
                 <HBox alignment="CENTER" spacing="12">
                     <children>
-                        <Label fx:id="lblUserName" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" text="Usuario" />
+                        <Label fx:id="lblUserName" styleClass="lbl-username" text="Usuario" />
                         <Button onAction="#handleLogout" styleClass="logout-btn">
                             <graphic>
                                 <FontIcon iconColor="#9F9F9F" iconLiteral="fas-sign-out-alt" iconSize="20" />
@@ -63,8 +63,8 @@
                         <VBox styleClass="stat-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <HBox alignment="CENTER_LEFT" spacing="10">
                                 <VBox spacing="1" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 12;" text="Reservas activas" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalReservas" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0" textFill="WHITE" />
+                                    <Label styleClass="stat-label-title" text="Reservas activas" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalReservas" styleClass="stat-label-value" text="0" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
                                     <FontIcon iconColor="#2563eb" iconLiteral="fas-calendar-check" iconSize="20" />
@@ -74,8 +74,8 @@
                         <VBox styleClass="stat-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <HBox alignment="CENTER_LEFT" spacing="10">
                                 <VBox spacing="1" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 12;" text="Usuarios" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalUsuarios" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0" textFill="WHITE" />
+                                    <Label styleClass="stat-label-title" text="Usuarios" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalUsuarios" styleClass="stat-label-value" text="0" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
                                     <FontIcon iconColor="#2563eb" iconLiteral="fas-users" iconSize="20" />
@@ -85,8 +85,8 @@
                         <VBox styleClass="stat-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <HBox alignment="CENTER_LEFT" spacing="10">
                                 <VBox spacing="1" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 12;" text="Pistas" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalPistas" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0" textFill="WHITE" />
+                                    <Label styleClass="stat-label-title" text="Pistas" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalPistas" styleClass="stat-label-value" text="0" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
                                     <FontIcon iconColor="#2563eb" iconLiteral="fas-th-large" iconSize="20" />
@@ -96,8 +96,8 @@
                         <VBox styleClass="stat-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <HBox alignment="CENTER_LEFT" spacing="10">
                                 <VBox spacing="1" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-font-size: 12;" text="Ingresos" textFill="#94a3b8" />
-                                    <Label fx:id="lblTotalIngresos" style="-fx-font-size: 26; -fx-font-weight: bold;" text="0€" textFill="WHITE" />
+                                    <Label styleClass="stat-label-title" text="Ingresos" textFill="#94a3b8" />
+                                    <Label fx:id="lblTotalIngresos" styleClass="stat-label-value" text="0€" textFill="WHITE" />
                                 </VBox>
                                 <StackPane styleClass="icon-container-blue">
                                     <FontIcon iconColor="#2563eb" iconLiteral="fas-money-bill-wave" iconSize="20" />

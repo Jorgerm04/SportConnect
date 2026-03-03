@@ -1,9 +1,11 @@
 package org.example.sportconnect.controllers;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -31,6 +33,8 @@ public class DashboardController {
     @FXML private Pagination pagination;
     @FXML private Button btnAddAction;
     @FXML private Label lblUserName;
+    private Button btnFirstPage;
+    private Button btnLastPage;
 
     private List<Object> allData = new ArrayList<>();
     private static final int ROWS_PER_PAGE = 10;
@@ -47,14 +51,76 @@ public class DashboardController {
         lblUserName.setText(currentUser.getName());
         pagination.setPageFactory(this::createPage);
         actualizarEstadisticas();
-        cargarTabReservas();
         btnAddAction.setText("Nueva Reserva");
-        // Accesibilidad: descripción de las pestañas para lectores de pantalla
         btnTabReservas.setAccessibleText("Pestaña Reservas");
         btnTabDeportes.setAccessibleText("Pestaña Deportes");
         btnTabPistas.setAccessibleText("Pestaña Pistas");
         btnTabUsuarios.setAccessibleText("Pestaña Usuarios");
         btnAddAction.setAccessibleText("Crear nuevo registro");
+
+        // Inyectar botones navegación y luego cargar datos (orden importante)
+        // Primero cargar datos, luego inyectar botones cuando el control-box ya existe
+        cargarTabReservas();
+    }
+
+    private void inyectarBotonesNavegacion() {
+        Node controlBox = pagination.lookup(".control-box");
+        if (!(controlBox instanceof HBox box)) return;
+
+        // Eliminar botones previos para evitar duplicados al reinyectar
+        box.getChildren().removeIf(n -> n instanceof Button b && b.getStyleClass().contains("page-nav-btn")
+                && (b == btnFirstPage || b == btnLastPage));
+
+        // Reemplazar botón "anterior" nativo por FontIcon
+        Node btnPrevNativo = pagination.lookup(".left-arrow-button");
+        if (btnPrevNativo instanceof Button btnPrev) {
+            FontIcon ico = new FontIcon("fas-angle-left");
+            ico.setIconColor(javafx.scene.paint.Color.web("#94a3b8"));
+            ico.setIconSize(13);
+            btnPrev.setGraphic(ico);
+            btnPrev.setText("");
+            btnPrev.getStyleClass().add("page-nav-btn");
+        }
+
+        // Reemplazar botón "siguiente" nativo por FontIcon
+        Node btnNextNativo = pagination.lookup(".right-arrow-button");
+        if (btnNextNativo instanceof Button btnNext) {
+            FontIcon ico = new FontIcon("fas-angle-right");
+            ico.setIconColor(javafx.scene.paint.Color.web("#94a3b8"));
+            ico.setIconSize(13);
+            btnNext.setGraphic(ico);
+            btnNext.setText("");
+            btnNext.getStyleClass().add("page-nav-btn");
+        }
+
+        // Botón primera página «
+        FontIcon icoFirst = new FontIcon("fas-angle-double-left");
+        icoFirst.setIconColor(javafx.scene.paint.Color.web("#94a3b8"));
+        icoFirst.setIconSize(13);
+        Button btnFirst = new Button();
+        btnFirst.setGraphic(icoFirst);
+        btnFirst.getStyleClass().add("page-nav-btn");
+        btnFirst.setAccessibleText("Ir a la primera página");
+        btnFirst.setOnAction(e -> pagination.setCurrentPageIndex(0));
+
+        // Botón última página »
+        FontIcon icoLast = new FontIcon("fas-angle-double-right");
+        icoLast.setIconColor(javafx.scene.paint.Color.web("#94a3b8"));
+        icoLast.setIconSize(13);
+        Button btnLast = new Button();
+        btnLast.setGraphic(icoLast);
+        btnLast.getStyleClass().add("page-nav-btn");
+        btnLast.setAccessibleText("Ir a la última página");
+        btnLast.setOnAction(e -> pagination.setCurrentPageIndex(pagination.getPageCount() - 1));
+
+        box.getChildren().add(0, btnFirst);
+        box.getChildren().add(btnLast);
+
+        // Guardar referencias para poder controlar visibilidad desde configurarPaginacion
+        this.btnFirstPage = btnFirst;
+        this.btnLastPage  = btnLast;
+
+
     }
 
     private void actualizarEstadisticas() {
@@ -81,6 +147,7 @@ public class DashboardController {
         pagination.setPageCount(pageCount > 0 ? pageCount : 1);
         pagination.setCurrentPageIndex(0);
         createPage(0);
+
     }
 
     @FXML
@@ -184,7 +251,7 @@ public class DashboardController {
                                 r.getEndHour().isBefore(java.time.LocalTime.now()));
                 boolean bloquearEdicion = r.isCancelled() || esPasada;
 
-                org.kordamp.ikonli.javafx.FontIcon iconEditar = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
+                FontIcon iconEditar = new FontIcon("fas-pencil-alt");
                 iconEditar.setIconColor(javafx.scene.paint.Color.web("#2563eb")); iconEditar.setIconSize(11);
                 Button btnEditar = new Button("Editar", iconEditar);
                 btnEditar.getStyleClass().add("btn-edit");
@@ -194,7 +261,7 @@ public class DashboardController {
                 btnEditar.setOnAction(e -> abrirEdicionReserva(r));
 
                 boolean cancelada = r.isCancelled();
-                org.kordamp.ikonli.javafx.FontIcon iconToggle = new org.kordamp.ikonli.javafx.FontIcon(cancelada ? "fas-redo" : "fas-times");
+                FontIcon iconToggle = new FontIcon(cancelada ? "fas-redo" : "fas-times");
                 iconToggle.setIconColor(javafx.scene.paint.Color.web(cancelada ? "#10b981" : "#ef4444")); iconToggle.setIconSize(11);
                 Button btnToggle = new Button(cancelada ? "Reactivar" : "Cancelar", iconToggle);
                 btnToggle.getStyleClass().add(cancelada ? "btn-reactivate" : "btn-cancel");
@@ -213,6 +280,7 @@ public class DashboardController {
 
         genericTable.getColumns().addAll(colId, colUser, colPista, colFecha, colHorario, colEstado, colAcciones);
         configurarPaginacion(reservationService.findAll());
+        Platform.runLater(this::inyectarBotonesNavegacion);
     }
 
     private void abrirEdicionReserva(Reservation reservation) {
@@ -287,13 +355,13 @@ public class DashboardController {
             HBox btnBox = new HBox(6);
             btnBox.setAlignment(Pos.CENTER);
 
-            org.kordamp.ikonli.javafx.FontIcon icoED = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
+            FontIcon icoED = new FontIcon("fas-pencil-alt");
             icoED.setIconColor(javafx.scene.paint.Color.web("#2563eb")); icoED.setIconSize(11);
             Button btnEditar = new Button("Editar", icoED);
             btnEditar.getStyleClass().add("btn-edit");
             btnEditar.setAccessibleText("Editar deporte " + sport.getName());
 
-            org.kordamp.ikonli.javafx.FontIcon icoELD = new org.kordamp.ikonli.javafx.FontIcon("fas-trash-alt");
+            FontIcon icoELD = new FontIcon("fas-trash-alt");
             icoELD.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoELD.setIconSize(11);
             Button btnEliminar = new Button("Eliminar", icoELD);
             btnEliminar.getStyleClass().add("btn-delete");
@@ -378,14 +446,14 @@ public class DashboardController {
                 super.updateItem(item, empty);
                 if (empty || !(getTableRow().getItem() instanceof Court c)) { setGraphic(null); return; }
 
-                org.kordamp.ikonli.javafx.FontIcon icoEditP = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
+                FontIcon icoEditP = new FontIcon("fas-pencil-alt");
                 icoEditP.setIconColor(javafx.scene.paint.Color.web("#2563eb")); icoEditP.setIconSize(11);
                 Button btnEditar = new Button("Editar", icoEditP);
                 btnEditar.getStyleClass().add("btn-edit");
                 btnEditar.setAccessibleText("Editar pista " + c.getName());
                 btnEditar.setOnAction(e -> abrirEdicionPista(c));
 
-                org.kordamp.ikonli.javafx.FontIcon icoDelP = new org.kordamp.ikonli.javafx.FontIcon("fas-trash-alt");
+                FontIcon icoDelP = new FontIcon("fas-trash-alt");
                 icoDelP.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoDelP.setIconSize(11);
                 Button btnEliminar = new Button("Eliminar", icoDelP);
                 btnEliminar.getStyleClass().add("btn-delete");
@@ -400,6 +468,7 @@ public class DashboardController {
 
         genericTable.getColumns().addAll(colId, colPista, colDeporte, colPrecio, colAccionesPista);
         configurarPaginacion(courtService.findAll());
+        Platform.runLater(this::inyectarBotonesNavegacion);
     }
 
     private void abrirEdicionPista(Court court) {
@@ -489,20 +558,19 @@ public class DashboardController {
                 super.updateItem(item, empty);
                 if (empty || !(getTableRow().getItem() instanceof User u)) { setGraphic(null); return; }
 
-                FontIcon icoEditU = new org.kordamp.ikonli.javafx.FontIcon("fas-pencil-alt");
+                FontIcon icoEditU = new FontIcon("fas-pencil-alt");
                 icoEditU.setIconColor(javafx.scene.paint.Color.web("#2563eb")); icoEditU.setIconSize(11);
                 Button btnEditar = new Button("Editar", icoEditU);
                 btnEditar.getStyleClass().add("btn-edit");
                 btnEditar.setAccessibleText("Editar usuario " + u.getName() + " " + u.getLastName());
                 btnEditar.setOnAction(e -> abrirEdicionUsuario(u));
 
-                FontIcon icoDelU = new org.kordamp.ikonli.javafx.FontIcon("fas-trash-alt");
+                FontIcon icoDelU = new FontIcon("fas-trash-alt");
                 icoDelU.setIconColor(javafx.scene.paint.Color.web("#ef4444")); icoDelU.setIconSize(11);
                 Button btnEliminar = new Button("Eliminar", icoDelU);
                 btnEliminar.getStyleClass().add("btn-delete");
                 btnEliminar.setAccessibleText("Eliminar usuario " + u.getName() + " " + u.getLastName());
 
-                // No permitir eliminar al usuario activo en sesión
                 User currentUser = Session.getInstance().getUser();
                 if (currentUser != null && currentUser.getId().equals(u.getId())) {
                     btnEliminar.setDisable(true);
@@ -519,6 +587,7 @@ public class DashboardController {
 
         genericTable.getColumns().addAll(colId, colNombre, colApellidos, colEmail, colPhone, colAdmin, colAccionesUser);
         configurarPaginacion(userService.findAll());
+        Platform.runLater(this::inyectarBotonesNavegacion);
     }
 
     private void abrirEdicionUsuario(User user) {
@@ -569,7 +638,7 @@ public class DashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/sportconnect/login/login-view.fxml"));
             Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) { e.printStackTrace(); }
