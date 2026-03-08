@@ -25,14 +25,14 @@ public class ReservationFormController {
     @FXML private VBox hboxAdminSelector;
     @FXML private ComboBox<User> comboUsuarios;
 
-    private final SportService sportService = new SportService();
-    private final CourtService courtService = new CourtService();
-    private final UserService userService = new UserService();
+    private final SportService sportService           = new SportService();
+    private final CourtService courtService           = new CourtService();
+    private final UserService userService             = new UserService();
     private final ReservationService reservationService = new ReservationService();
 
-    private Button lastSelectedHour = null;
-    private Sport deporteActual = null;
-    private Court pistaSeleccionada;
+    private Button lastSelectedHour  = null;
+    private Sport deporteActual      = null;
+    private Court pistaSeleccionada  = null;
     private LocalDate fechaSeleccionada = LocalDate.now();
 
     private Reservation reservacionAEditar = null;
@@ -41,7 +41,7 @@ public class ReservationFormController {
     private final LocalDate fechaLimite = LocalDate.now().plusDays(15);
     private final DateTimeFormatter formatterLargo = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
     private final DateTimeFormatter formatterCorto = DateTimeFormatter.ofPattern("d 'de' MMMM", new Locale("es", "ES"));
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private final DateTimeFormatter timeFormatter  = DateTimeFormatter.ofPattern("HH:mm");
 
     @FXML
     public void initialize() {
@@ -69,10 +69,8 @@ public class ReservationFormController {
 
         javafx.application.Platform.runLater(() -> {
             hboxDeportes.getChildren().forEach(node -> {
-                if (node instanceof Button btn) {
-                    if (btn.getText().equals(reservacion.getCourt().getSport().getName())) {
-                        btn.fire();
-                    }
+                if (node instanceof Button btn && btn.getText().equals(reservacion.getCourt().getSport().getName())) {
+                    btn.fire();
                 }
             });
         });
@@ -101,7 +99,7 @@ public class ReservationFormController {
     private void actualizarInterfazFecha() {
         lblFechaActual.setText(fechaSeleccionada.format(formatterLargo));
         lblResumenFecha.setText(fechaSeleccionada.format(formatterCorto));
-        if (deporteActual != null) cargarPistasPorDeporte((int) (long) deporteActual.getId());
+        if (deporteActual != null) cargarPistasPorDeporte(deporteActual.getId());
     }
 
     private void cargarDeportesDesdeDB() {
@@ -127,13 +125,13 @@ public class ReservationFormController {
         btn.getStyleClass().add("active");
         deporteActual = sport;
         lblResumenSport.setText(sport.getName());
-        cargarPistasPorDeporte((int) (long) sport.getId());
+        cargarPistasPorDeporte(sport.getId());
     }
 
-    private void cargarPistasPorDeporte(int sportId) {
+    private void cargarPistasPorDeporte(Long sportId) {
         vboxPistasContenedor.getChildren().clear();
         courtService.findAll().stream()
-                .filter(c -> c.getSport().getId() == sportId)
+                .filter(c -> c.getSport().getId().equals(sportId))
                 .forEach(this::generarFilaPista);
     }
 

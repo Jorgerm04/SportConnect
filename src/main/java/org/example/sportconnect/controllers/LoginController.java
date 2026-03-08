@@ -44,7 +44,7 @@ public class LoginController {
 
             Stage stage = (Stage) emailField.getScene().getWindow();
 
-            // Creamos la escena con el tamaño actual del stage para evitar el hueco negro
+
             Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
             stage.setTitle(title);

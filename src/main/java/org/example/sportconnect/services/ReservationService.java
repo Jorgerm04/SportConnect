@@ -11,36 +11,56 @@ public class ReservationService {
 
     private final ReservationDAO reservationDAO = new ReservationDAO();
 
-    /** Devuelve todas las reservas */
+    /** Página de reservas con filtro opcional — consulta paginada en BD */
+    public List<Reservation> findPage(int offset, int limit, String filtro) {
+        return reservationDAO.findPage(offset, limit, filtro);
+    }
+
+    /** Total de reservas que coinciden con el filtro (para calcular páginas) */
+    public long count(String filtro) { return reservationDAO.count(filtro); }
+
+    /** Todos los registros con filtro — para seleccionar todo entre páginas */
+    public List<Reservation> findAll(String filtro) { return reservationDAO.findAll(filtro); }
+
+    /** Página de reservas con filtro de texto y rango de fechas */
+    public List<Reservation> findPage(int offset, int limit, String filtro, LocalDate desde, LocalDate hasta) {
+        return reservationDAO.findPage(offset, limit, filtro, desde, hasta);
+    }
+
+    /** Cuenta reservas con filtro de texto y rango de fechas */
+    public long count(String filtro, LocalDate desde, LocalDate hasta) {
+        return reservationDAO.count(filtro, desde, hasta);
+    }
+
+    /** Todos los registros con filtro de texto y rango de fechas — para seleccionar todo entre páginas */
+    public List<Reservation> findAll(String filtro, LocalDate desde, LocalDate hasta) {
+        return reservationDAO.findAll(filtro, desde, hasta);
+    }
+
+    /** findAll completo — para exportación CSV */
     public List<Reservation> findAll() { return reservationDAO.findAll(); }
 
-    /** Total de reservas activas formateado para el dashboard */
+    /** Reservas del usuario actual — para la vista Home */
+    public List<Reservation> findByUser(Long userId) {
+        if (userId == null) return Collections.emptyList();
+        return reservationDAO.findByUser(userId);
+    }
+
     public String countActiveFormatted() { return String.valueOf(reservationDAO.countActive()); }
+    public String earningsFormatted()    { return String.format("%.2f€", reservationDAO.sumEarnings()); }
 
-    /** Ingresos totales formateados para el dashboard */
-    public String earningsFormatted() { return String.format("%.2f€", reservationDAO.sumEarnings()); }
-
-    /** Reservas activas de una pista en una fecha */
     public List<Reservation> findByCourtAndDate(Court court, LocalDate date) {
         if (court == null || date == null) return Collections.emptyList();
         return reservationDAO.findByCourtAndDate(court, date);
     }
 
-    /** Reservas activas de una pista en una fecha, excluyendo una (para edición) */
     public List<Reservation> findByCourtAndDateExcluding(Court court, LocalDate date, Long excludeId) {
         if (court == null || date == null) return Collections.emptyList();
         return reservationDAO.findByCourtAndDateExcluding(court, date, excludeId);
     }
 
-    /** Guarda una nueva reserva */
-    public boolean save(Reservation reservation) { return reservationDAO.save(reservation); }
-
-    /** Actualiza una reserva existente */
+    public boolean save(Reservation reservation)   { return reservationDAO.save(reservation); }
     public boolean update(Reservation reservation) { return reservationDAO.update(reservation); }
-
-    /** Cancela una reserva */
-    public boolean cancel(Long id) { return reservationDAO.cancel(id); }
-
-    /** Reactiva una reserva cancelada */
-    public boolean reactivate(Long id) { return reservationDAO.reactivate(id); }
+    public boolean cancel(Long id)                 { return reservationDAO.cancel(id); }
+    public boolean reactivate(Long id)             { return reservationDAO.reactivate(id); }
 }

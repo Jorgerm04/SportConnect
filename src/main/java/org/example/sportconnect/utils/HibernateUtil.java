@@ -16,6 +16,5 @@ public class HibernateUtil {
         }
     }
 
-    /** Devuelve la SessionFactory singleton */
     public static SessionFactory getSessionFactory() { return sessionFactory; }
 }

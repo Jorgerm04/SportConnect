@@ -13,7 +13,6 @@ public class GenericDAO<T> {
 
     public GenericDAO(Class<T> type) { this.type = type; }
 
-    /** Inserta una entidad nueva */
     public boolean save(T entity) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -28,7 +27,6 @@ public class GenericDAO<T> {
         }
     }
 
-    /** Actualiza una entidad existente */
     public boolean update(T entity) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -43,7 +41,6 @@ public class GenericDAO<T> {
         }
     }
 
-    /** Elimina una entidad por id */
     public boolean delete(Long id) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -59,7 +56,6 @@ public class GenericDAO<T> {
         }
     }
 
-    /** Busca por id, devuelve null si no existe */
     public T findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(type, id);
@@ -69,7 +65,6 @@ public class GenericDAO<T> {
         }
     }
 
-    /** Devuelve todos los registros de la tabla */
     public List<T> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM " + type.getSimpleName(), type).list();
@@ -77,5 +72,48 @@ public class GenericDAO<T> {
             e.printStackTrace();
             return Collections.emptyList();
         }
+    }
+
+    /**
+     * Devuelve una página con LIMIT/OFFSET en BD.
+     * Las subclases deben sobrescribir para añadir JOIN FETCH u ORDER BY propios.
+     */
+    public List<T> findPage(int offset, int limit) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM " + type.getSimpleName(), type)
+                    .setFirstResult(offset)
+                    .setMaxResults(limit)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Devuelve una página filtrada por texto. Por defecto ignora el filtro.
+     * Las subclases deben sobrescribir para implementar búsqueda real en BD.
+     */
+    public List<T> findPage(int offset, int limit, String filtro) {
+        return findPage(offset, limit);
+    }
+
+    public long count() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                    "SELECT count(e) FROM " + type.getSimpleName() + " e", Long.class
+            ).getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Cuenta los registros que coinciden con el filtro.
+     * Por defecto ignora el filtro. Las subclases deben sobrescribir.
+     */
+    public long count(String filtro) {
+        return count();
     }
 }

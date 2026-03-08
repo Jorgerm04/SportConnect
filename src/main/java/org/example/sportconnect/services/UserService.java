@@ -9,20 +9,28 @@ public class UserService {
 
     private final UserDAO userDAO = new UserDAO();
 
-    /** Valida credenciales y devuelve el usuario, o null si son incorrectas */
     public User login(String email, String plainPassword) {
         User user = userDAO.findByEmail(email);
         if (user != null && BCrypt.checkpw(plainPassword, user.getPassword())) return user;
         return null;
     }
 
-    /** Devuelve todos los usuarios */
+    /** Página de usuarios con filtro opcional — consulta paginada en BD */
+    public List<User> findPage(int offset, int limit, String filtro) {
+        return userDAO.findPage(offset, limit, filtro);
+    }
+
+    /** Total de usuarios que coinciden con el filtro (para calcular páginas) */
+    public long count(String filtro) { return userDAO.count(filtro); }
+
+    /** Todos los registros con filtro — para seleccionar todo entre páginas */
+    public List<User> findAll(String filtro) { return userDAO.findAll(filtro); }
+
+    /** findAll completo — sólo para exportación CSV */
     public List<User> findAll() { return userDAO.findAll(); }
 
-    /** Total de usuarios formateado para el dashboard */
     public String countFormatted() { return String.valueOf(userDAO.count()); }
 
-    /** Crea un usuario nuevo. Devuelve false si el email ya existe */
     public boolean save(String name, String lastName, String email, String phone, String plainPassword, boolean isAdmin) {
         if (userDAO.findByEmail(email) != null) return false;
         User user = new User();
@@ -35,13 +43,11 @@ public class UserService {
         return userDAO.save(user);
     }
 
-    /** Actualiza datos del usuario. Si newPassword no es null, la actualiza hasheada */
     public boolean update(User user, String newPassword) {
         if (newPassword != null && !newPassword.isBlank())
             user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         return userDAO.update(user);
     }
 
-    /** Elimina un usuario por id */
     public boolean delete(Long id) { return userDAO.delete(id); }
 }

@@ -18,6 +18,5 @@ public class Session {
     public User getUser()           { return user; }
     public void setUser(User user)  { this.user = user; }
 
-    /** Cierra la sesión eliminando el usuario actual */
     public void logOut() { user = null; }
 }

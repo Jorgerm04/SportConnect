@@ -49,7 +49,7 @@
             </padding>
             <children>
 
-                <!-- GRID 2x2 STATS - altura mínima -->
+                <!-- GRID 2x2 STATS -->
                 <GridPane hgap="12.0" vgap="10.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
@@ -120,6 +120,19 @@
                                         <Button fx:id="btnTabUsuarios" onAction="#handleTabChange" styleClass="tab-button" text="Usuarios" />
                                     </children>
                                 </HBox>
+                                <TextField fx:id="txtBuscar" promptText="Buscar" styleClass="search-field">
+                                    <HBox.margin><Insets left="16.0" bottom="8.0" /></HBox.margin>
+                                </TextField>
+                                <HBox fx:id="hboxFechas" alignment="CENTER_LEFT" spacing="6">
+                                    <HBox.margin><Insets left="8.0" bottom="8.0" /></HBox.margin>
+                                    <Label text="Desde" styleClass="fecha-label" />
+                                    <DatePicker fx:id="dpDesde" promptText="dd/mm/aaaa" styleClass="date-picker-dark" prefWidth="135" />
+                                    <Label text="Hasta" styleClass="fecha-label" />
+                                    <DatePicker fx:id="dpHasta" promptText="dd/mm/aaaa" styleClass="date-picker-dark" prefWidth="135" />
+                                </HBox>
+                                <Button fx:id="btnColumnas" styleClass="btn-columnas" text="Columnas">
+                                    <HBox.margin><Insets left="8.0" bottom="8.0" /></HBox.margin>
+                                </Button>
                                 <Region HBox.hgrow="ALWAYS" />
                                 <Button fx:id="btnAddAction" onAction="#handleAdd" styleClass="add-button" text="Nuevo Registro">
                                     <graphic>
@@ -152,6 +165,11 @@
                                         </ScrollPane>
                                     </children>
                                 </StackPane>
+                                <HBox fx:id="bulkBar" alignment="CENTER_LEFT" spacing="12" styleClass="bulk-bar">
+                                    <Label fx:id="lblSeleccionados" styleClass="bulk-label" text="0 seleccionados" />
+                                    <Button fx:id="btnBulkEliminar" styleClass="btn-bulk-delete" text="Eliminar" />
+                                    <Button fx:id="btnBulkExportar" styleClass="btn-bulk-export" text="Exportar CSV" />
+                                </HBox>
                                 <HBox alignment="CENTER" styleClass="pagination-container">
                                     <Pagination fx:id="pagination" maxPageIndicatorCount="5" styleClass="custom-pagination" />
                                 </HBox>

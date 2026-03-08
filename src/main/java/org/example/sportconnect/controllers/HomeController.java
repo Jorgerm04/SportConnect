@@ -46,18 +46,17 @@ public class HomeController {
         if (currentUser == null) return;
         lblUserName.setText(currentUser.getName());
 
-        List<Reservation> todas = reservationService.findAll();
+        // Consulta filtrada por usuario directamente en BD
+        List<Reservation> reservas = reservationService.findByUser(currentUser.getId());
         LocalDate hoy = LocalDate.now();
 
-        for (Reservation res : todas) {
-            if (res.getUser().getId().equals(currentUser.getId())) {
-                boolean esPasada = res.getDate().isBefore(hoy) ||
-                        (res.getDate().isEqual(hoy) && res.getEndHour().isBefore(java.time.LocalTime.now())) ||
-                        res.isCancelled();
-                HBox tarjeta = crearTarjetaReserva(res, esPasada);
-                if (esPasada) containerHistorial.getChildren().add(tarjeta);
-                else containerProximas.getChildren().add(tarjeta);
-            }
+        for (Reservation res : reservas) {
+            boolean esPasada = res.getDate().isBefore(hoy) ||
+                    (res.getDate().isEqual(hoy) && res.getEndHour().isBefore(java.time.LocalTime.now())) ||
+                    res.isCancelled();
+            HBox tarjeta = crearTarjetaReserva(res, esPasada);
+            if (esPasada) containerHistorial.getChildren().add(tarjeta);
+            else containerProximas.getChildren().add(tarjeta);
         }
 
         if (containerProximas.getChildren().isEmpty()) {
@@ -86,7 +85,6 @@ public class HomeController {
         content.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(content, Priority.ALWAYS);
 
-        // Deporte + pista
         VBox infoSport = new VBox(2);
         Label lblSport = new Label(res.getCourt().getSport().getName());
         lblSport.getStyleClass().add("sport-name");
@@ -95,7 +93,6 @@ public class HomeController {
         infoSport.getChildren().addAll(lblSport, lblCourt);
         infoSport.setMinWidth(160);
 
-        // Fecha y hora
         HBox infoBox = new HBox(15);
         infoBox.setAlignment(Pos.CENTER_LEFT);
         FontIcon iconCal = new FontIcon("far-calendar-alt");
@@ -105,7 +102,6 @@ public class HomeController {
         lblData.getStyleClass().add("info-text");
         infoBox.getChildren().addAll(iconCal, lblData);
 
-        // Badge cancelada
         if (res.isCancelled()) {
             Label lblCancelada = new Label("Cancelada");
             lblCancelada.getStyleClass().add("badge-cancelled-card");
@@ -117,7 +113,6 @@ public class HomeController {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         content.getChildren().addAll(infoSport, infoBox, spacer);
 
-        // Botón cancelar — solo en reservas activas futuras
         if (!esHistorial && !res.isCancelled()) {
             FontIcon icoCancel = new FontIcon("fas-times");
             icoCancel.setIconColor(Color.web("#ef4444")); icoCancel.setIconSize(11);
@@ -162,6 +157,7 @@ public class HomeController {
     @FXML
     private void handleLogout(ActionEvent event) {
         try {
+            Session.getInstance().logOut();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/sportconnect/login/login-view.fxml"));
             Scene loginScene = new Scene(loader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

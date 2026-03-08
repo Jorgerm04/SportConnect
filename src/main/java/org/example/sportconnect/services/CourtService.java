@@ -9,13 +9,22 @@ public class CourtService {
 
     private final CourtDAO courtDAO = new CourtDAO();
 
-    /** Devuelve todas las pistas con su deporte */
+    /** Página de pistas con filtro opcional — consulta paginada en BD */
+    public List<Court> findPage(int offset, int limit, String filtro) {
+        return courtDAO.findPage(offset, limit, filtro);
+    }
+
+    /** Total de pistas que coinciden con el filtro (para calcular páginas) */
+    public long count(String filtro) { return courtDAO.count(filtro); }
+
+    /** Todos los registros con filtro — para seleccionar todo entre páginas */
+    public List<Court> findAll(String filtro) { return courtDAO.findAll(filtro); }
+
+    /** findAll completo — sólo para exportación CSV y selectores de formulario */
     public List<Court> findAll() { return courtDAO.findAll(); }
 
-    /** Total de pistas formateado para el dashboard */
     public String countFormatted() { return String.valueOf(courtDAO.count()); }
 
-    /** Crea una pista nueva */
     public boolean save(String name, Sport sport, double price) {
         Court court = new Court();
         court.setName(name);
@@ -24,9 +33,6 @@ public class CourtService {
         return courtDAO.save(court);
     }
 
-    /** Actualiza una pista existente */
     public boolean update(Court court) { return courtDAO.update(court); }
-
-    /** Elimina una pista por id */
-    public boolean delete(Long id) { return courtDAO.delete(id); }
+    public boolean delete(Long id)     { return courtDAO.delete(id); }
 }
